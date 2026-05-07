@@ -1,0 +1,9 @@
+---
+description: MBKH one-usecase-per-file rule
+alwaysApply: true
+---
+
+# One UseCase Per File
+
+- Keep exactly one use case class per file in feature `usecases/`.
+- Co-locate request/response types in the same use case file.

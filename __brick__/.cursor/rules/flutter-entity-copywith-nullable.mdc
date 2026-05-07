@@ -1,0 +1,10 @@
+---
+description: MBKH entity copyWith nullable wrapper convention
+alwaysApply: true
+---
+
+# Entity copyWith Nullable Convention
+
+- For nullable fields in `copyWith`, use `Nullable<T>` wrapper style.
+- Parameter style: `Nullable<T?>? field`
+- Assignment style: `field != null ? field.value : this.field`

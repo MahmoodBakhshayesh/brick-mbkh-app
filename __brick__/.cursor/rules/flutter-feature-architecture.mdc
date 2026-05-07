@@ -1,0 +1,11 @@
+---
+description: MBKH feature architecture baseline
+alwaysApply: true
+---
+
+# MBKH Feature Architecture
+
+- Follow strict flow: `View -> Controller -> UseCase -> Repository -> DataSource`.
+- Organize code under `lib/features/<feature_name>/`.
+- Keep responsive wrapper in `<feature>_view.dart` and concrete UIs in `presentation/`.
+- Register routes in navigation files and dependencies in `lib/di.dart`.
