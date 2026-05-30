@@ -75,6 +75,7 @@ dependencies:
   slide_countdown: ^2.0.2
   stop_watch_timer: ^3.2.2
   riverpod_sqflite: ^0.4.2
+  unified_fields: 0.2.5
 
 
 
