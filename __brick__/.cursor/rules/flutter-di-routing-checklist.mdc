@@ -1,0 +1,21 @@
+---
+description: Mandatory DI and routing checklist for new or updated features
+alwaysApply: true
+---
+
+# DI and Routing Checklist
+
+When creating or changing a feature, ensure all of the following:
+
+- Add route name constant in `core/navigation/app_route_names.dart`.
+- Add route entry in `core/navigation/router_provider.dart`.
+- For detail/edit routes, pass route IDs via provider overrides.
+- Register in `lib/di.dart` using `registerFeatureStack`:
+  - `name` must end with `DataSource` (e.g. `CoffeesDataSource` → `CoffeesDataSourceRemote` / `CoffeesDataSourceLocal`).
+  - `createRepository: FeatureRepository.builder`
+- Register each use case: `locator.registerLazySingleton(() => MyUsecase(locator()));`
+- Do not leave a feature partially wired (files exist but route/DI missing).
+
+# Completion Rule
+
+- Before finishing, verify: navigation → controller → `runUseCase` → use case → repository → data source.
