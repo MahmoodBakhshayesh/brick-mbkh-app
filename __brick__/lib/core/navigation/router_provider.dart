@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import '/core/navigation/app_routes.dart';
 import '/features/home/home_view.dart';
@@ -20,12 +19,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: AppMiddlewares.authRoutesMiddleware,
     routes: [
       GoRoute(
-        path: "/login",
+        path: '/login',
         name: AppRouteNames.login,
         builder: (context, state) => const LoginView(),
       ),
       GoRoute(
-        path: "/home",
+        path: '/home',
         name: AppRouteNames.home,
         builder: (context, state) => const HomeView(),
         routes: [
@@ -55,7 +54,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        path: "/profile",
+        path: '/profile',
         name: AppRouteNames.profile,
         builder: (context, state) => const ProfileView(),
       ),

@@ -7,7 +7,7 @@ extension StringExt on String {
 
   bool get isValidPhone => RegExp('09[0-9]{9}').hasMatch(this) && length == 11;
   bool get isValidPhoneIR => (RegExp('[+]989[0-9]{9}').hasMatch(this)||RegExp('09[0-9]{9}').hasMatch(this));
-  String get normed => replaceAll(" ", '').replaceAll("+98", '09').replaceAll("-", '').replaceAll("(", '').replaceAll(")", '');
+  String get normed => replaceAll(' ', '').replaceAll('+98', '09').replaceAll('-', '').replaceAll('(', '').replaceAll(')', '');
 
 
 

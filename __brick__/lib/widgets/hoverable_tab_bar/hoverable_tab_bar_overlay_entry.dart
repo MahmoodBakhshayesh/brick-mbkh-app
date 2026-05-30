@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../buttons/app_button.dart';
-import '../buttons/app_text_button.dart';
 import 'hoverable_tab_bar_item.dart';
 
 OverlayEntry createHoverableTabBarOverlayEntry({

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:math';
 
+import 'package:app_device_net_info/app_device_net_info.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../data/app_data.dart';
+import 'api_http_logger.dart';
 import '../helpers/logger_service.dart';
 import '../helpers/network_exception.dart';
 import '../helpers/networking_typedef.dart';
@@ -14,6 +15,7 @@ import '../models/base/flavor_config.dart';
 import '../models/networking/http_method.dart';
 import '../models/networking/network_request.dart';
 import '../models/networking/network_response.dart';
+import '../models/networking/network_log_level.dart';
 import '../models/networking/retry_policy.dart';
 
 class ApiService {
@@ -23,9 +25,13 @@ class ApiService {
   final Duration connectTimeout;
   final Duration receiveTimeout;
   Map<String, dynamic> defaultHeaders = {'content-type': 'application/json', 'Accept': 'application/json'};
+  Map<String, dynamic> additionalHeaders = {'content-type': 'application/json', 'Accept': 'application/json'};
   final RetryPolicy retryPolicy;
   final int maxRetries;
   final bool throwOnFailureGlobal;
+
+  /// HTTP request/response logging. [NetworkLogLevel.none] by default.
+  final NetworkLogLevel logLevel;
 
   // Hooks
   void Function(NetworkRequest req)? onStart;
@@ -47,6 +53,7 @@ class ApiService {
     this.retryPolicy = RetryPolicy.exponential,
     this.maxRetries = 2,
     this.throwOnFailureGlobal = true,
+    this.logLevel = NetworkLogLevel.none,
     this.onStart,
     this.onEnd,
     this.onSuccess,
@@ -69,29 +76,50 @@ class ApiService {
       ),
     );
 
-    if (kReleaseMode == false) {
-      _dio.interceptors.add(
-        PrettyDioLogger(
-          requestBody: true,
-          // filter: (options, args) => args.data.toString().length < 1000,
-        ),
-      );
-    }
+    _dio.interceptors.add(ApiHttpLogger(defaultLevel: logLevel));
   }
 
-  factory ApiService.appDefault({NetworkHook? onTokenExpire}) {
+  Map<String, dynamic> _requestExtra({bool? enableLogs}) => {
+        ApiHttpLogger.extraLogLevelKey: resolveApiLogLevel(
+          serviceLevel: logLevel,
+          enableLogs: enableLogs,
+        ),
+      };
+
+  void addHeader(Map<String,dynamic> h){
+    dev.log('adding header $h');
+    additionalHeaders.addAll(h);
+  }
+  void removeHeader(String key){
+    additionalHeaders.remove(key);
+  }
+
+  factory ApiService.appDefault({
+    NetworkHook? onTokenExpire,
+    AppInfoData? appInfoData,
+    int? bootStrapVersion,
+    NetworkLogLevel logLevel = NetworkLogLevel.none,
+  }) {
+    dev.log('check ApiService$bootStrapVersion');
+    dev.log('check ApiService${appInfoData?.versionKey}');
     return ApiService(
+      logLevel: logLevel,
       retryPolicy: RetryPolicy.none,
       messageExtractor: (json) => json['message']?.toString() ?? json['error_description']?.toString(),
       successCheck: (req, res) {
         final m = res.data is Map ? (res.data as Map) : const {};
         final httpOk = (res.statusCode != null && res.statusCode! >= 200 && res.statusCode! < 300);
-        final businessOk =true|| ((m['status'] ?? m['success']) == true) || (m['code'] == 0) || (m['Message'] == 'Done');
+        final businessOk =
+            ((m['status'] ?? m['success']) == true) || (m['code'] == 0) || (m['Message'] == 'Done');
         return httpOk && (m.isEmpty || businessOk);
+      },
+      additionalHeaders: {
+        'X-App-Version':'',
+         'X-Bootstrap-Version':''
       },
       failedCheck: (req, res) {
         final httpOk = (res.statusCode != null && res.statusCode! >= 200 && res.statusCode! < 300);
-        return !httpOk;
+        if (!httpOk) return true;
         if ((res.data is Map) && (res.data as Map)['Message'] != 'Done') return true;
 
         final m = res.data is Map ? (res.data as Map) : const {};
@@ -292,7 +320,10 @@ class ApiService {
         cancelToken: cancelToken,
         savePath,
         queryParameters: query,
-        options: Options(headers: _composeHeaders(headers)),
+        options: Options(
+          headers: _composeHeaders(headers),
+          extra: _requestExtra(enableLogs: enableLogs),
+        ),
         onReceiveProgress: onReceiveProgress,
       );
 
@@ -330,11 +361,11 @@ class ApiService {
     CancelToken? cancelToken,
   }) async {
 
-    headers ??= {};
+    headers ??= _composeHeaders(headers);
     if(AppData.instance.token!=null){
-      headers.addAll({"Authorization":"Bearer ${AppData.instance.token}"});
+      headers.addAll({'Authorization':'Bearer ${AppData.instance.token}'});
     }
-    // appLog.w(jsonEncode(headers));
+    appLog.w(jsonEncode(headers));
     final req = NetworkRequest(method, pathOrUrl, query, headers, body, enableLogs);
     onStart?.call(req);
     final sw = Stopwatch()..start();
@@ -354,6 +385,7 @@ class ApiService {
             headers: _composeHeaders(headers),
             receiveTimeout: timeout ?? receiveTimeout,
             sendTimeout: timeout ?? connectTimeout,
+            extra: _requestExtra(enableLogs: enableLogs),
           ),
           onSendProgress: onSendProgress,
           onReceiveProgress: onReceiveProgress,
@@ -367,11 +399,11 @@ class ApiService {
           continue; // Move to the next attempt
         }
         if(e.type == DioExceptionType.connectionError){
-          return _handleFailedRequest(req, e, st, sw.elapsed, shouldThrow,data: {"Message":"Connection Error"});
+          return _handleFailedRequest(req, e, st, sw.elapsed, shouldThrow,data: {'Message':'Connection Error'});
         }else if(e.response?.statusCode == 404){
-          return _handleFailedRequest(req, e, st, sw.elapsed, shouldThrow,data: {"Message":"(404)\nCould not connect to server\nApi not found"});
+          return _handleFailedRequest(req, e, st, sw.elapsed, shouldThrow,data: {'Message':'(404)\nCould not connect to server\nApi not found'});
         }else if(e.response?.statusCode == 503){
-          return _handleFailedRequest(req, e, st, sw.elapsed, shouldThrow,data: {"Message":"(503)\nCould not connect to server\nServer Error"});
+          return _handleFailedRequest(req, e, st, sw.elapsed, shouldThrow,data: {'Message':'(503)\nCould not connect to server\nServer Error'});
         }
         return _handleFailedRequest(req, e, st, sw.elapsed, shouldThrow,data: e.response?.data);
       } on NetworkException catch (e) {
@@ -447,12 +479,12 @@ class ApiService {
         break;
 
       default:
-        appLog.w("$data is message");
+        appLog.w('$data is message');
 
         res = NetworkResponse(
           statusCode: statusCode,
           success: false,
-          message:data?["Message"]?? e.toString(),
+          message:data?['Message']?? e.toString(),
           data: data,
           raw: e,
           duration: duration,
@@ -461,14 +493,13 @@ class ApiService {
 
     onFailed?.call(req, res);
     onEnd?.call(req, res);
-    appLog.w("${res.message} is message");
+    appLog.w('${res.message} is message');
     if (shouldThrow) {
       if (e is DioException) {
         /// if request was canceled by us.
         // if (e.type == DioExceptionType.cancel) throw NetworkException(message: 'Request Cancelled.', wasCancelled: true);
         throw _handleDioException(e, res);
       } else {
-        throw Exception("Tests");
         throw NetworkException(
           statusCode: res.statusCode,
           message: res.message ?? 'Unknown error',
@@ -483,7 +514,8 @@ class ApiService {
   Map<String, dynamic> _composeHeaders(Map<String, dynamic>? override) {
     final all = <String, dynamic>{};
     all.addAll(defaultHeaders);
-    if (AppData.instance.hasToken) all['Authorization'] = 'Bearer ${AppData.instance.token}';
+    all.addAll(additionalHeaders);
+    // if (AppData.instance.hasToken) all['Authorization'] = 'Bearer ${AppData.instance.token}';
     if (override != null) all.addAll(override);
     return all;
   }
@@ -500,7 +532,7 @@ class ApiService {
   }
 
   NetworkResponse _wrapError(NetworkRequest req, DioException e, Duration duration) {
-    appLog.w("_wrapError ${e.message}");
+    appLog.w('_wrapError ${e.message}');
     return NetworkResponse(
       success: false,
       statusCode: e.response?.statusCode ?? -1,
@@ -552,7 +584,7 @@ class ApiService {
 
   NetworkException _handleDioException(DioException e, NetworkResponse res) {
 
-    appLog.w("_handleDioException ${res.data}");
+    appLog.w('_handleDioException ${res.data}');
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
         return NetworkException(

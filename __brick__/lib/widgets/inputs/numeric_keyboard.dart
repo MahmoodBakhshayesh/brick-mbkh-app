@@ -282,11 +282,12 @@ class _CupertinoNumericKeyboardState extends State<CupertinoNumericKeyboard> {
     _repeatTimer = null;
   }
 
-  bool _handleRawKey(RawKeyEvent event) {
-    if (event is! RawKeyDownEvent) return false;
+  bool _handleKey(KeyEvent event) {
+    if (event is! KeyDownEvent) return false;
 
+    final keyboard = HardwareKeyboard.instance;
     final isMac = defaultTargetPlatform == TargetPlatform.macOS;
-    final isCtrlOrMeta = isMac ? event.isMetaPressed : event.isControlPressed;
+    final isCtrlOrMeta = isMac ? keyboard.isMetaPressed : keyboard.isControlPressed;
 
     // Enter / Numpad Enter => Done
     if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.numpadEnter) {
@@ -306,11 +307,11 @@ class _CupertinoNumericKeyboardState extends State<CupertinoNumericKeyboard> {
 
     // Arrow movement (+Shift to extend selection)
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-      _moveCaret(-1, extend: event.isShiftPressed);
+      _moveCaret(-1, extend: keyboard.isShiftPressed);
       return true;
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-      _moveCaret(1, extend: event.isShiftPressed);
+      _moveCaret(1, extend: keyboard.isShiftPressed);
       return true;
     }
 
@@ -359,15 +360,6 @@ class _CupertinoNumericKeyboardState extends State<CupertinoNumericKeyboard> {
       return true;
     }
 
-    if (topRow.containsKey(event.logicalKey)) {
-      _insert(topRow[event.logicalKey]!);
-      return true;
-    }
-    if (numpad.containsKey(event.logicalKey)) {
-      _insert(numpad[event.logicalKey]!);
-      return true;
-    }
-
     // Decimal: '.' ',' or numpad decimal
     if (widget.allowDecimal &&
         (event.logicalKey == LogicalKeyboardKey.period ||
@@ -395,9 +387,14 @@ class _CupertinoNumericKeyboardState extends State<CupertinoNumericKeyboard> {
 
     return SafeArea(
       top: false,
-      child: RawKeyboardListener(
+      child: Focus(
         focusNode: _focusNode,
-        onKey: _handleRawKey,
+        onKeyEvent: (node, event) {
+          if (_handleKey(event)) {
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
         child: Container(
           decoration: BoxDecoration(
             color: bg,

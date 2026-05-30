@@ -2,7 +2,6 @@ import '/features/home/domain/data_sources/home_data_source_local.dart';
 import '/features/home/domain/data_sources/home_data_source_remote.dart';
 
 import '../interfaces/home_repository_interface.dart';
-import '../interfaces/home_data_source_interface.dart';
 import 'package:get_it/get_it.dart';
 
 class HomeRepository implements HomeRepositoryInterface {

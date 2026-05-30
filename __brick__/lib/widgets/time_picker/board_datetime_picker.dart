@@ -1,4 +1,4 @@
-library board_datetime_picker;
+library;
 
 import 'package:intl/intl.dart';
 

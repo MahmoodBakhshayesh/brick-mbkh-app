@@ -1,14 +1,16 @@
 import 'dart:convert';
 
-import '/core/constants/apis.dart';
-import '/core/data/app_data.dart';
-import '/core/helpers/nullable.dart';
-import '/core/interfaces/base_failure.dart';
-import '/features/login/domain/entities/bootstrap_class.dart';
-import '/features/login/domain/entities/login_response.dart';
-import '/features/login/login_view_state.dart';
-import '/features/profile/profile_state.dart';
-import '/features/profile/usecases/update_profile_usecase.dart';
+import 'package:{{project_name}}/core/constants/apis.dart';
+import 'package:{{project_name}}/core/data/app_data.dart';
+import 'package:{{project_name}}/core/helpers/nullable.dart';
+import 'package:{{project_name}}/core/helpers/use_case_runner.dart';
+import 'package:{{project_name}}/core/interfaces/base_failure.dart';
+import 'package:{{project_name}}/core/interfaces/base_result.dart';
+import 'package:{{project_name}}/features/login/domain/entities/bootstrap_class.dart';
+import 'package:{{project_name}}/features/login/domain/entities/login_response.dart';
+import 'package:{{project_name}}/features/login/login_view_state.dart';
+import 'package:{{project_name}}/features/profile/profile_state.dart';
+import 'package:{{project_name}}/features/profile/usecases/update_profile_usecase.dart';
 import 'package:dio/dio.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -31,25 +33,26 @@ class ProfileController extends BaseController {
 
   Future<void> logout(BuildContext context) async {
     final sp = await sharedPreferencesAsync;
-    await sp.remove("User");
+    await sp.remove('User');
+    await sp.remove('Bootstrap');
     AppData.instance.setToken(null);
     AppData.instance.setUserId(null);
-    // AppData.instance.setBootstrap(null);
+    AppData.instance.setBootstrap(null);
     Future.delayed(Duration(milliseconds: 400), () {
       ref.read(authenticatedUserProvider.notifier).update((s) => null);
     });
   }
 
   Future<bool> updateProfile({required String fullName, required String bio, required Profession profession}) async {
-    final updateProfileUsecase = locator<UpdateProfileUsecase>();
-    final updateProfileResponse = await updateProfileUsecase.exec(UpdateProfileRequest(fullName: fullName, bio: bio, profession: profession));
-    if (updateProfileResponse.success) {
-      final updated = updateProfileResponse.profileData!;
-      ref.read(authenticatedUserProvider.notifier).update((s)=>updated);
+    try {
+      final updated = await runUseCase(
+        locator<UpdateProfileUsecase>(),
+        UpdateProfileRequest(fullName: fullName, bio: bio, profession: profession),
+      );
+      ref.read(authenticatedUserProvider.notifier).update((s) => updated);
       updateUserInCache(userEntity: updated);
       return true;
-    } else {
-      FailureBus.I.emitMsg(updateProfileResponse.message);
+    } on Failure {
       return false;
     }
   }
@@ -70,7 +73,7 @@ class ProfileController extends BaseController {
       final kb = imageSize / 1024;
       final mb = kb / 1024;
       if (mb > 5) {
-        FailureBus.I.emitMsg("Image Size is more than 5mb!\nUse smaller image.");
+        FailureBus.I.emitMsg('Image Size is more than 5mb!\nUse smaller image.');
         updatingAvatarPN.update((state) => false);
         return;
       }
@@ -86,7 +89,7 @@ class ProfileController extends BaseController {
   }
 
   Future<void> evictImage(String current) async {
-    logger.i("evict image $current");
+    logger.i('evict image $current');
     await FastCachedImageConfig.deleteCachedImage(imageUrl: current);
     final NetworkImage provider = NetworkImage(current);
     await provider.evict();
@@ -99,23 +102,23 @@ class ProfileController extends BaseController {
       'file': await MultipartFile.fromFile(
         imageFile.path,
         filename: fileName,
-        contentType: MediaType('image', 'jpg'), // Or 'image', 'webp', etc.
+        contentType: MediaType('image', 'jpg'),
       ),
     });
 
-    String apiAddress = "${Apis.baseUrl}users/me/files/profile-image";
-    logger.w("uploading image $fileName to $apiAddress \n ${AppData.instance.token}");
+    String apiAddress = '${Apis.baseUrl}users/me/files/profile-image';
+    logger.w('uploading image $fileName to $apiAddress \n ${AppData.instance.token}');
     try {
       final dio = Dio(BaseOptions(receiveTimeout: Duration(minutes: 10), sendTimeout: Duration(minutes: 10), connectTimeout: Duration(minutes: 10)));
       final response = await dio.post(
         apiAddress,
         data: formData,
-        options: Options(headers: {'Content-Type': 'multipart/form-data', "Authorization": "Bearer ${AppData.instance.token}"}),
+        options: Options(headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ${AppData.instance.token}'}),
       );
 
       if (response.statusCode == 200) {
         logger.w('Upload success: ${response.data}');
-        final String fileUrl = response.data["Body"]["Response"]["FileUrl"];
+        final String fileUrl = response.data['Body']['Response']['FileUrl'];
         ref.read(authenticatedUserProvider.notifier).update((s) => s?.copyWith(profileImageUrl: Nullable(fileUrl)));
         updateUserInCache(userEntity: ref.read(authenticatedUserProvider)!);
       }
@@ -128,7 +131,7 @@ class ProfileController extends BaseController {
   Future<void> updateUserInCache({String? token, UserEntity? userEntity}) async {
     final sp = await sharedPreferencesAsync;
     LoginResponseData loginResponseData = LoginResponseData(accessToken: token ?? AppData.instance.token!, user: userEntity ?? ref.read(authenticatedUserProvider)!);
-    logger.w("saveing user ing cache ${loginResponseData.toJson()}");
-    await sp.setString("User", jsonEncode(loginResponseData.toJson()));
+    logger.w('saveing user ing cache ${loginResponseData.toJson()}');
+    await sp.setString('User', jsonEncode(loginResponseData.toJson()));
   }
 }

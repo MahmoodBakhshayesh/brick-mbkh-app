@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,8 +22,9 @@ class SendCodeWidget extends HookConsumerWidget {
     final phoneC = useTextEditingController.fromValue(TextEditingValue(text: phone));
     useEffect((){
       phoneC.text = phone;
+      return null;
     },[phone]);
-    final _start= useState(60);
+    final start= useState(60);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -72,7 +72,7 @@ class SendCodeWidget extends HookConsumerWidget {
             label: context.localizations.sendActivationCode,
             onPressed: () async {
               await loginController.sendSMS(phoneC.text);
-              _start.value = 60;
+              start.value = 60;
               // _start = 60;
               // setState(() {});
             },

@@ -1,15 +1,13 @@
-import 'dart:developer';
-import '/core/helpers/error_message_formatter.dart';
-
-import '/features/profile/domain/data_sources/profile_data_source_local.dart';
-import '/features/profile/domain/data_sources/profile_data_source_remote.dart';
+import 'package:{{project_name}}/core/helpers/use_case_response_mapper.dart';
+import 'package:{{project_name}}/core/interfaces/base_repository.dart';
+import 'package:{{project_name}}/features/profile/domain/data_sources/profile_data_source_local.dart';
+import 'package:{{project_name}}/features/profile/domain/data_sources/profile_data_source_remote.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../usecases/update_profile_usecase.dart';
 import '../interfaces/profile_repository_interface.dart';
-import '../interfaces/profile_data_source_interface.dart';
-import 'package:get_it/get_it.dart';
 
-class ProfileRepository implements ProfileRepositoryInterface {
+class ProfileRepository extends BaseRepository implements ProfileRepositoryInterface {
   final ProfileDataSourceRemote remoteDataSource;
   final ProfileDataSourceLocal localDataSource;
 
@@ -26,12 +24,11 @@ class ProfileRepository implements ProfileRepositoryInterface {
   }
 
   @override
-  Future<UpdateProfileResponse> updateProfile(UpdateProfileRequest request) async {
-    try {
-      final profile = await remoteDataSource.updateProfile(request);
-      return UpdateProfileResponse(success: true, profileData: profile!);
-    } catch (e, st) {
-      return UpdateProfileResponse(success: false, message: ErrorMessageFormatter.format(e, st));
-    }
+  Future<UpdateProfileResponse> updateProfile(UpdateProfileRequest request) {
+    return mapUseCaseResponse(
+      () => remoteDataSource.updateProfile(request),
+      onSuccess: (profileData) => UpdateProfileResponse(profileData: profileData),
+      create: UpdateProfileResponse.new,
+    );
   }
 }

@@ -105,7 +105,7 @@ class _DotButtonState extends State<DotButton> {
                   shadowColor: const WidgetStatePropertyAll(Colors.transparent),
                   backgroundColor: WidgetStatePropertyAll(
                       widget.backgroundColor??
-                          c.withOpacity(widget.flat
+                          c.withValues(alpha: widget.flat
                               ? 0
                               : widget.fade
                               ? 0.3
@@ -155,7 +155,7 @@ class _DotButtonState extends State<DotButton> {
             fixedSize: WidgetStatePropertyAll(Size(widget.size, widget.size)),
             padding: const WidgetStatePropertyAll(EdgeInsets.zero),
             shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-            backgroundColor: WidgetStatePropertyAll(widget.backgroundColor??c.withOpacity(widget.flat
+            backgroundColor: WidgetStatePropertyAll(widget.backgroundColor??c.withValues(alpha: widget.flat
                 ? 0
                 : widget.fade
                 ? 0.3

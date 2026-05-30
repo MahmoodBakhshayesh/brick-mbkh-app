@@ -1,9 +1,8 @@
-import '/features/login/domain/entities/bootstrap_class.dart';
-import '/features/login/domain/entities/login_response.dart';
+import 'package:{{project_name}}/features/login/domain/entities/bootstrap_class.dart';
+import 'package:{{project_name}}/features/login/domain/entities/login_response.dart';
 
 import '../../../core/interfaces/base_usecase.dart';
 import '../../../core/interfaces/base_result.dart';
-import '../domain/interfaces/profile_repository_interface.dart';
 import '../domain/repositories/profile_repository.dart';
 
 class UpdateProfileRequest extends Request {
@@ -17,33 +16,29 @@ class UpdateProfileRequest extends Request {
   Failure? validate() => null;
 
   @override
-  Map<String, dynamic> toJson() => {
-    "Body": {
-      "Request": {
-        "FullName": fullName,
-        "Bio": bio,
-        "ProfessionTypeId": profession.id,
-        "ProfessionTitle": profession.displayName,
-      },
-    },
-  };
+  Map<String, dynamic> toJson() => Request.apiEnvelope({
+    'FullName': fullName,
+    'Bio': bio,
+    'ProfessionTypeId': profession.id,
+    'ProfessionTitle': profession.displayName,
+  });
 }
 
 class UpdateProfileResponse extends UseCaseResponse {
-  final bool success;
   final UserEntity? profileData;
-  final String message;
 
-  UpdateProfileResponse({required this.success, this.profileData, this.message = ''});
+  UpdateProfileResponse({super.success, this.profileData, super.message, super.error});
 }
 
-class UpdateProfileUsecase extends UseCase<UpdateProfileResponse, UpdateProfileRequest> {
+class UpdateProfileUsecase extends RepositoryUseCase<UserEntity, UpdateProfileResponse, UpdateProfileRequest> {
   final ProfileRepository _repository;
 
   UpdateProfileUsecase(this._repository);
 
   @override
-  Future<UpdateProfileResponse> exec(UpdateProfileRequest request) async {
-    return _repository.updateProfile(request);
-  }
+  Future<UpdateProfileResponse> fetchFromRepository(UpdateProfileRequest request) =>
+      _repository.updateProfile(request);
+
+  @override
+  UserEntity? dataFromResponse(UpdateProfileResponse response) => response.profileData;
 }

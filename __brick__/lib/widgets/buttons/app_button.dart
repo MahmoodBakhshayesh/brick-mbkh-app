@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import '/core/extensions/context_extension.dart';
 import 'package:flutter/foundation.dart';
@@ -86,7 +85,7 @@ class AppButton extends StatefulWidget {
 
 class AppButtonState extends State<AppButton> {
   bool _loading = false;
-  bool _isVisible = true; // updated by VisibilityDetector
+  final bool _isVisible = true; // updated by VisibilityDetector
   late final FocusNode _internalFocusNode;
   FocusNode get _focusNode => widget.focusNode ?? _internalFocusNode;
 
@@ -152,7 +151,6 @@ class AppButtonState extends State<AppButton> {
   }
 
   Widget _buildCoreButton(BuildContext context) {
-    final theme = Theme.of(context);
     final disable = widget.disabled || widget.onPressed == null;
 
     Color c = widget.color ?? context.mainColor;
@@ -166,7 +164,7 @@ class AppButtonState extends State<AppButton> {
       fg = tmp;
     }
     if (widget.fade) {
-      backgroundColor = backgroundColor.withOpacity(0.3);
+      backgroundColor = backgroundColor.withValues(alpha: 0.3);
     }
     fg = widget.textColor ?? fg;
 

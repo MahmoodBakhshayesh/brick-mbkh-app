@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import '/core/data/app_data.dart';
 import '/features/login/domain/entities/bootstrap_class.dart';
@@ -7,7 +6,6 @@ import '/widgets/app_field_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pinput/pinput.dart';
 
 import '../../../core/extensions/context_extension.dart';
 import '../../../core/theme/app_colors.dart';

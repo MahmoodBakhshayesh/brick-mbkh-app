@@ -2,7 +2,6 @@ import 'dart:async';
 
 import '/core/extensions/context_extension.dart';
 import '/core/theme/app_colors.dart';
-import '/widgets/buttons/app_text_button.dart';
 import '/widgets/inputs/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -81,8 +80,6 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
 
   @override
   Widget build(BuildContext context) {
-    final loginController = ref.watch(loginControllerProvider);
-    final step = ref.watch(signupStepProvider);
     return SafeArea(
       child: Scaffold(
           backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -293,7 +290,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                                       border: Border(bottom: BorderSide(color: Color(0xffCFD5DC))),
                                     ),
                                   ),
-                                  onCompleted: (pin) => print(pin),
+                                  onCompleted: (_) {},
                                 ),
                               ),
                             ),
@@ -496,7 +493,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                       )
                     ],
                   ),
-                  Text("Login with OTP"),
+                  Text('Login with OTP'),
 
                 ],
               );

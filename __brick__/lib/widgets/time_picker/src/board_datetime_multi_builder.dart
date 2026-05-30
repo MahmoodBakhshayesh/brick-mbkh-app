@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import '../board_datetime_picker.dart';
 import '../src/ui/board_datetime_contents_state.dart';
@@ -106,7 +105,7 @@ class _MultiBoardDateTimeContentState<T extends BoardDateTimeCommonResult>
   }
 
   @override
-  void setNewValue(DateTime val, {bool byPicker = false,String from = ""}) {
+  void setNewValue(DateTime val, {bool byPicker = false,String from = ''}) {
     if (currentDateType.value == MultiCurrentDateType.start) {
       startDate.value = val;
     } else {
@@ -197,8 +196,7 @@ class _MultiBoardDateTimeContentState<T extends BoardDateTimeCommonResult>
       visible: animation.value != 0.0,
       child: SizeTransition(
         sizeFactor: animation,
-        axis: Axis.vertical,
-        axisAlignment: -1.0,
+        axis: Axis.vertical, alignment: AlignmentDirectional(-1.0, -1.0),
         // child: isWide ? _widebuilder() : _standardBuilder(),
         child: Column(
           mainAxisSize: MainAxisSize.min,

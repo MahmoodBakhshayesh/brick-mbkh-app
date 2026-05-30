@@ -11,7 +11,7 @@ class HomeViewPhone extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(homeControllerProvider);
+    ref.watch(homeControllerProvider);
 
     return Scaffold(
       appBar: HomeAppBar(),
@@ -61,7 +61,7 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        "${user.fullName}",
+                        user.fullName,
                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
                       ),
                       Spacer(),

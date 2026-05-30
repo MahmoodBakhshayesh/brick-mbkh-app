@@ -24,14 +24,14 @@ class LoginResponseData {
   );
 
   factory LoginResponseData.fromJson(Map<String, dynamic> json) => LoginResponseData(
-    accessToken: expectString(json, "AccessToken"),
-    user: UserEntity.fromJson(expectMap(json, "User")),
+    accessToken: expectString(json, 'AccessToken'),
+    user: UserEntity.fromJson(expectMap(json, 'User')),
     // bootstrap: Bootstrap.fromJson(json["Bootstrap"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "AccessToken": accessToken,
-    "User": user.toJson(),
+    'AccessToken': accessToken,
+    'User': user.toJson(),
     // "Bootstrap": bootstrap.toJson(),
   };
 }
@@ -78,22 +78,22 @@ class UserEntity {
   );
 
   factory UserEntity.fromJson(Map<String, dynamic> json) => UserEntity(
-    id: expectString(json, "Id"),
-    phoneNumber: expectString(json, "PhoneNumber"),
-    fullName: expectString(json, "FullName", defaultValue: ''),
-    bio: expectNullableString(json, "Bio"),
-    profileImageUrl: expectNullableString(json, "ProfileImageUrl"),
-    professionType: expectInt(json, "ProfessionTypeId", defaultValue: 1),
-    professionTitle: expectString(json, "ProfessionTitle", defaultValue: ''),
+    id: expectString(json, 'Id'),
+    phoneNumber: expectString(json, 'PhoneNumber'),
+    fullName: expectString(json, 'FullName', defaultValue: ''),
+    bio: expectNullableString(json, 'Bio'),
+    profileImageUrl: expectNullableString(json, 'ProfileImageUrl'),
+    professionType: expectInt(json, 'ProfessionTypeId', defaultValue: 1),
+    professionTitle: expectString(json, 'ProfessionTitle', defaultValue: ''),
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "PhoneNumber": phoneNumber,
-    "FullName": fullName,
-    "Bio": bio,
-    "ProfessionTypeId": professionType,
-    "ProfileImageUrl": profileImageUrl,
-    "ProfessionTitle": professionTitle,
+    'Id': id,
+    'PhoneNumber': phoneNumber,
+    'FullName': fullName,
+    'Bio': bio,
+    'ProfessionTypeId': professionType,
+    'ProfileImageUrl': profileImageUrl,
+    'ProfessionTitle': professionTitle,
   };
 }

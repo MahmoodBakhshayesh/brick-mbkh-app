@@ -8,7 +8,7 @@ class ProfileViewDesktop extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(profileControllerProvider);
+    ref.watch(profileControllerProvider);
     return Scaffold(
       appBar: ProfileAppBarDesktop(),
       body: Column(children: []),
@@ -39,7 +39,7 @@ class ProfileAppBarDesktop extends StatelessWidget implements PreferredSizeWidge
                   Row(
                     children: [
                       Text(
-                        "Profile",
+                        'Profile',
                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
                       ),
                       Spacer(),

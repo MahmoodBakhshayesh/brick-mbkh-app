@@ -9,14 +9,12 @@ class FieldDataWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: TextStyle(fontSize: 14, color: AppColors.black2)),
-          Text(data??'', style: TextStyle(fontSize: 16, color: AppColors.black2,fontWeight: FontWeight.bold)),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 14, color: AppColors.black2)),
+        Text(data ?? '', style: TextStyle(fontSize: 16, color: AppColors.black2, fontWeight: FontWeight.bold)),
+      ],
     );
   }
 }

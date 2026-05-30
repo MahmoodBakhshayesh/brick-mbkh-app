@@ -13,6 +13,7 @@ import 'core/data/app_data.dart';
 import 'core/database/sembast.dart';
 import 'core/helpers/api_service.dart';
 import 'core/helpers/app_overlays_helper.dart';
+import 'core/helpers/di_feature_stack.dart';
 import 'core/helpers/go_router_helper.dart';
 import 'core/helpers/logger_service.dart';
 import 'core/helpers/shared_preferences_helper.dart';
@@ -29,7 +30,6 @@ import 'features/login/usecases/login_usecase.dart';
 import 'features/profile/domain/data_sources/profile_data_source_local.dart';
 import 'features/profile/domain/data_sources/profile_data_source_remote.dart';
 import 'features/profile/domain/repositories/profile_repository.dart';
-
 
 GetIt locator = GetIt.instance;
 
@@ -71,16 +71,21 @@ void initializeDependencies() {
   locator.registerLazySingleton<BaseOverlaysHelper>(() => AppOverlaysHelper());
   locator.registerLazySingleton<ApiService>(() => ApiService.appDefault());
 
-  // --- Data Sources / Repose---
-  locator.registerLazySingleton<LoginDataSourceLocal>(() => LoginDataSourceLocal(locator()), instanceName: 'LoginDataSourceLocal');
-  locator.registerLazySingleton<LoginDataSourceRemote>(() => LoginDataSourceRemote(locator()), instanceName: 'LoginDataSourceRemote');
-  locator.registerLazySingleton<LoginRepository>(LoginRepository.builder);
+  registerFeatureStack<LoginDataSourceLocal, LoginDataSourceRemote, LoginRepository>(
+    locator: locator,
+    name: 'LoginDataSource',
+    createLocal: (l) => LoginDataSourceLocal(l()),
+    createRemote: (l) => LoginDataSourceRemote(l()),
+    createRepository: LoginRepository.builder,
+  );
 
-
-  locator.registerLazySingleton<ProfileDataSourceLocal>(() => ProfileDataSourceLocal(locator()), instanceName: 'ProfileDataSourceLocal');
-  locator.registerLazySingleton<ProfileDataSourceRemote>(() => ProfileDataSourceRemote(locator()), instanceName: 'ProfileDataSourceRemote');
-  locator.registerLazySingleton<ProfileRepository>(ProfileRepository.builder);
-
+  registerFeatureStack<ProfileDataSourceLocal, ProfileDataSourceRemote, ProfileRepository>(
+    locator: locator,
+    name: 'ProfileDataSource',
+    createLocal: (l) => ProfileDataSourceLocal(l()),
+    createRemote: (l) => ProfileDataSourceRemote(l()),
+    createRepository: ProfileRepository.builder,
+  );
 
   // --- Use Cases ---
   locator.registerLazySingleton(() => LoginUsecase(locator()));
@@ -92,7 +97,6 @@ void initializeDependencies() {
   locator.registerLazySingleton(() => ConfirmOtpLoginUsecase(locator()));
   locator.registerLazySingleton(() => GetBootstrapUsecase(locator()));
   locator.registerLazySingleton(() => UpdateProfileUsecase(locator()));
-
 }
 
 Future<void> registerGlobalRepositories() async {

@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/models/base/flavor_config.dart';
 import '../../features/login/domain/entities/bootstrap_class.dart';
-import '../../features/login/domain/entities/login_response.dart';
 
 class AppData extends ChangeNotifier {
   AppData._();
@@ -25,7 +24,7 @@ class AppData extends ChangeNotifier {
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     _token = _prefs.getString(_kTokenKey);
-    log("setting token $_token");
+    log('setting token $_token');
     // Don't notify here because it's startup
   }
 
@@ -38,7 +37,7 @@ class AppData extends ChangeNotifier {
       _token = value;
       if (value != null) {
         _prefs.setString(_kTokenKey, value);
-        log("saving token ${value}");
+        log('saving token $value');
       } else {
         // _prefs.remove(_kTokenKey);
       }
@@ -48,7 +47,7 @@ class AppData extends ChangeNotifier {
 
   void setUserId(String? value) {
     if(value == null){
-      log("logging out");
+      log('logging out');
     }
     if (_userId != value) {
       _userId = value;

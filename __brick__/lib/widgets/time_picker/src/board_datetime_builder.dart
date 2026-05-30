@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import 'board_datetime_options.dart';
@@ -142,18 +141,18 @@ class _BoardDateTimeBuilderState<T extends BoardDateTimeCommonResult>
   @override
   void initState() {
     assert(() {
-      if (T.toString() != "BoardDateTimeCommonResult") {
+      if (T.toString() != 'BoardDateTimeCommonResult') {
         void throwInvalidType() {
           throw Exception('Oops..Type and type do not match.: ${T.toString()}');
         }
 
         // Perform type checks
         if (widget.pickerType == DateTimePickerType.datetime) {
-          if (T.toString() != "BoardDateTimeResult") throwInvalidType();
+          if (T.toString() != 'BoardDateTimeResult') throwInvalidType();
         } else if (widget.pickerType == DateTimePickerType.date) {
-          if (T.toString() != "BoardDateResult") throwInvalidType();
+          if (T.toString() != 'BoardDateResult') throwInvalidType();
         } else if (widget.pickerType == DateTimePickerType.time) {
-          if (T.toString() != "BoardTimeResult") throwInvalidType();
+          if (T.toString() != 'BoardTimeResult') throwInvalidType();
         }
       }
       return true;
@@ -261,7 +260,7 @@ class _SingleBoardDateTimeContentState<T extends BoardDateTimeCommonResult>
   }
 
   @override
-  void setNewValue(DateTime val, {bool byPicker = false,String from = ""}) {
+  void setNewValue(DateTime val, {bool byPicker = false,String from = ''}) {
     // log("set new val here $val ${from}");
     dateState.value = val;
     if (byPicker && widget.pickerFocusNode != null) {
@@ -342,7 +341,7 @@ class _SingleBoardDateTimeContentState<T extends BoardDateTimeCommonResult>
       child: SizeTransition(
         sizeFactor: animation,
         axis: Axis.vertical,
-        axisAlignment: -1.0,
+        alignment: Alignment.topCenter,
         // child: isWide ? _widebuilder() : _standardBuilder(),
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -1,11 +1,7 @@
-import 'dart:developer';
-import 'dart:math';
 
 import 'package:action_slider/action_slider.dart';
-import '/core/extensions/context_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 /// Optional scope: Enter triggers [onActivate] when focus is anywhere INSIDE this subtree.
@@ -88,10 +84,8 @@ class AppSliderButton extends StatefulWidget {
 
 class AppSliderButtonState extends State<AppSliderButton> {
   bool _loading = false;
-  bool _isVisible = true; // updated by VisibilityDetector
+  final bool _isVisible = true; // updated by VisibilityDetector
   late final FocusNode _internalFocusNode;
-
-  FocusNode get _focusNode => widget.focusNode ?? _internalFocusNode;
 
   /// Programmatic trigger
   void triggerTap() => _onTap();

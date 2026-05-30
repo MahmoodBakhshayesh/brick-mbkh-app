@@ -8,7 +8,6 @@ import 'package:pinput/pinput.dart';
 
 import '../../../core/extensions/context_extension.dart';
 import '../../../core/theme/app_styles.dart';
-import '../../../widgets/buttons/app_text_button.dart';
 import '../../../widgets/main_card.dart';
 import '../login_view_state.dart';
 
@@ -26,6 +25,7 @@ class ConfirmActiveCodeWidget extends HookConsumerWidget {
     final isValidCode = useState(false);
     useEffect((){
       isValidCode.value = pinC.text.length ==6;
+      return null;
     },[useListenable(pinC).text]);
 
     useEffect((){
@@ -35,9 +35,10 @@ class ConfirmActiveCodeWidget extends HookConsumerWidget {
             pinC.setText(a);
           }
         }catch(e){
-          log("error on auto ${e}");
+          log('error on auto $e');
         }
       });
+      return null;
     },[]);
 
 
@@ -102,7 +103,7 @@ class ConfirmActiveCodeWidget extends HookConsumerWidget {
                       ),
                     ),
                     onCompleted: (pin) {
-                      log("conde completed ${pin}");
+                      log('conde completed $pin');
                       Future.delayed(Duration(milliseconds: 300),(){
                         pressController.press();
                       });

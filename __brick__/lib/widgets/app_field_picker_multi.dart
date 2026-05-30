@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as dev;
@@ -9,8 +7,6 @@ import '../core/extensions/context_extension.dart';
 import '../core/theme/app_colors.dart';
 import 'app_text_field.dart';
 import 'buttons/app_button.dart';
-import 'scrollableList/item_positions_listener.dart';
-import 'scrollableList/scrollable_positioned_list.dart';
 
 class AppMultiFieldPicker<T> extends StatefulWidget {
   final String Function(T)? itemToString;
@@ -82,10 +78,10 @@ class _AppMultiFieldPickerState<T> extends State<AppMultiFieldPicker<T>> {
 
   @override
   void initState() {
-    controller = TextEditingController(text: widget.values.map((a) => a?.toString()).join(", ") ?? '');
+    controller = TextEditingController(text: widget.values.map((a) => a.toString()).join(', '));
     value.addListener(() {
       Future(() {
-        controller.text = value.value.map((a)=>a.toString()).join(", ");
+        controller.text = value.value.map((a)=>a.toString()).join(', ');
         widget.onChange?.call(value.value);
         setState(() {});
       });
@@ -103,7 +99,7 @@ class _AppMultiFieldPickerState<T> extends State<AppMultiFieldPicker<T>> {
   @override
   void didUpdateWidget(covariant AppMultiFieldPicker<T> oldWidget) {
     if (widget.values != oldWidget.values && mounted) {
-      controller.text = widget.values.map((v) => widget.valueToString?.call(v) ?? v.toString()).join(", ");
+      controller.text = widget.values.map((v) => widget.valueToString?.call(v) ?? v.toString()).join(', ');
       value.value = widget.values;
       setState(() {});
     }
@@ -113,7 +109,6 @@ class _AppMultiFieldPickerState<T> extends State<AppMultiFieldPicker<T>> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
     return ValueListenableBuilder<List<T>>(
       valueListenable: value,
       builder: (context, v, _) {
@@ -121,7 +116,7 @@ class _AppMultiFieldPickerState<T> extends State<AppMultiFieldPicker<T>> {
           onTap: widget.locked
               ? null
               : () {
-                  dev.log("pick item");
+                  dev.log('pick item');
                   showModalBottomSheet(
                     isScrollControlled: true,
                     context: context,
@@ -147,14 +142,14 @@ class _AppMultiFieldPickerState<T> extends State<AppMultiFieldPicker<T>> {
                     elevation: 2,
                   ).then((v) {
                     if (v == Null) {
-                      dev.log("should null value");
+                      dev.log('should null value');
                       value.value = [];
                       widget.onChange?.call([]);
                       setState(() {});
                     } else if (v != null) {
                       dev.log(v.toString());
                       value.value = v;
-                      controller.text = v.map((v) => widget.valueToString?.call(v) ?? v.toString()).join(", ");
+                      controller.text = v.map((v) => widget.valueToString?.call(v) ?? v.toString()).join(', ');
                       widget.onChange?.call(v);
                       setState(() {});
                     }
@@ -218,8 +213,6 @@ class MultiPickerSheetWidget<T> extends StatefulWidget {
 
 class _MultiPickerSheetWidgetState<T> extends State<MultiPickerSheetWidget<T>> {
   final TextEditingController searchC = TextEditingController();
-  final ItemScrollController _itemScrollController = ItemScrollController();
-  final ItemPositionsListener _positionsListener = ItemPositionsListener.create();
   bool autoPop = false;
   List<T> selected = [];
 
@@ -272,82 +265,11 @@ class _MultiPickerSheetWidgetState<T> extends State<MultiPickerSheetWidget<T>> {
     // dev.log(widget.searchBuilder!(filtered.first));
     // dev.log((widget.searchBuilder?.call(filtered.first) ?? filtered.first.toString()).toLowerCase().indexOf(query).toString());
     return filtered.where((a) => !widget.suggestion.contains(a)).toList();
-    return filtered;
   }
 
-  void _scrollToSelected() {
-    return;
-    // if (!mounted || widget.value == null) return;
-    //
-    // final items = _filteredSorted(); // <- your filtered list
-    // final idx = items.indexOf(widget.value as T);
-    // if (idx < 0) return;
-    //
-    // // Defer until laid out so positions are available
-    // if (!_itemScrollController.isAttached || _positionsListener.itemPositions.value.isEmpty) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToSelected());
-    //   return;
-    // }
-    //
-    // // If everything fits, don't scroll
-    // if (_listFitsInViewport(items.length)) {
-    //   return;
-    // }
-    //
-    // // If already fully visible, don't scroll
-    // if (_isIndexFullyVisible(idx)) {
-    //   return;
-    // }
-    //
-    // _itemScrollController.scrollTo(index: idx, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut, alignment: 0.1);
-  }
+  void _scrollToSelected() {}
 
-  void _scrollToTop() {
-    // if (!mounted || widget.value == null) return;
-    //
-    // final items = _filteredSorted(); // <- your filtered list
-    // final idx = 0;
-    // // Defer until laid out so positions are available
-    // if (!_itemScrollController.isAttached || _positionsListener.itemPositions.value.isEmpty) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToSelected());
-    //   return;
-    // }
-    //
-    // // If everything fits, don't scroll
-    // if (_listFitsInViewport(items.length)) {
-    //   return;
-    // }
-    //
-    // // If already fully visible, don't scroll
-    // if (_isIndexFullyVisible(idx)) {
-    //   return;
-    // }
-    //
-    // _itemScrollController.scrollTo(index: idx, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut, alignment: 0.1);
-  }
-
-  bool _listFitsInViewport(int itemCount) {
-    final positions = _positionsListener.itemPositions.value;
-    if (positions.isEmpty) return false; // not laid out yet
-
-    // Is the first item fully visible?
-    final first = positions.where((p) => p.index == 0).toList();
-    // Is the last item fully visible?
-    final last = positions.where((p) => p.index == itemCount - 1).toList();
-
-    if (first.isNotEmpty && last.isNotEmpty) {
-      final firstFullyVisible = first.any((p) => p.itemLeadingEdge >= 0 && p.itemTrailingEdge <= 1);
-      final lastFullyVisible = last.any((p) => p.itemLeadingEdge >= 0 && p.itemTrailingEdge <= 1);
-      return firstFullyVisible && lastFullyVisible;
-    }
-    return false;
-  }
-
-  bool _isIndexFullyVisible(int index) {
-    final positions = _positionsListener.itemPositions.value;
-    if (positions.isEmpty) return false;
-    return positions.any((p) => p.index == index && p.itemLeadingEdge >= 0 && p.itemTrailingEdge <= 1);
-  }
+  void _scrollToTop() {}
 
   @override
   Widget build(BuildContext context) {
@@ -387,9 +309,9 @@ class _MultiPickerSheetWidgetState<T> extends State<MultiPickerSheetWidget<T>> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text("Pick ${widget.label}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: Text('Pick ${widget.label}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
-                    if (widget.hasClear) AppButton(label: "Clear", reverse: true, color: Colors.blueAccent, onPressed: () => Navigator.of(context).pop(Null)),
+                    if (widget.hasClear) AppButton(label: 'Clear', reverse: true, color: Colors.blueAccent, onPressed: () => Navigator.of(context).pop(Null)),
                     const CloseButton(),
                   ],
                 ),
@@ -411,14 +333,14 @@ class _MultiPickerSheetWidgetState<T> extends State<MultiPickerSheetWidget<T>> {
                     onTap: () => Navigator.of(context).pop(s),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.mainGreen.withOpacity(0.18),
+                        color: AppColors.mainGreen.withValues(alpha: 0.18),
                         border: const Border(bottom: BorderSide(color: Colors.white)),
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
                       child: Row(
                         children: [
                           Expanded(child: widget.itemToWidget?.call(s) ?? Text(s.toString())),
-                          Text("Suggestion", style: TextStyle(color: Colors.black45, fontSize: 10)),
+                          Text('Suggestion', style: TextStyle(color: Colors.black45, fontSize: 10)),
                         ],
                       ),
                     ),
@@ -445,7 +367,7 @@ class _MultiPickerSheetWidgetState<T> extends State<MultiPickerSheetWidget<T>> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.blueAccent.withOpacity(0.3) : const Color(0xffF2F3F6),
+                          color: isSelected ? Colors.blueAccent.withValues(alpha: 0.3) : const Color(0xffF2F3F6),
                           border: const Border(bottom: BorderSide(color: Colors.white)),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
@@ -468,7 +390,7 @@ class _MultiPickerSheetWidgetState<T> extends State<MultiPickerSheetWidget<T>> {
                   children: [
                     Expanded(
                       child: AppButton(
-                        label: "Cancel",
+                        label: 'Cancel',
                         radius: 12,
                         color: AppColors.headlineColor,
                         reverse: true,
@@ -481,7 +403,7 @@ class _MultiPickerSheetWidgetState<T> extends State<MultiPickerSheetWidget<T>> {
                     ),
                     Expanded(
                       child: AppButton(
-                        label: "Confirm",
+                        label: 'Confirm',
                         radius: 12,
                         onPressed: () {
                           Navigator.pop(context, selected);

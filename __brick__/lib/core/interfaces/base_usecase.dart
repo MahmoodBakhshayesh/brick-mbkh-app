@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+
 import '../data/app_data.dart';
 import '../helpers/network_exception.dart';
+import '../helpers/use_case_guard.dart';
 import 'base_failure.dart';
 import 'base_result.dart';
 
@@ -13,8 +15,22 @@ abstract class Request {
 
   Map<String, dynamic> toJson();
 
-  static Map<String, dynamic> createRequestJson({required String execution, required Map<String, dynamic>? body}) {
-    Map<String, dynamic> requestBody = {
+  /// Standard API envelope: `{ "Body": { "Request": { ... } } }` with optional token.
+  static Map<String, dynamic> apiEnvelope(Map<String, dynamic> requestFields) {
+    return {
+      'Body': {
+        if (AppData.instance.hasToken) 'Token': AppData.instance.token,
+        'Request': requestFields,
+      },
+    };
+  }
+
+  /// Legacy envelope when an [execution] name is required on the body.
+  static Map<String, dynamic> createRequestJson({
+    required String execution,
+    required Map<String, dynamic>? body,
+  }) {
+    final requestBody = {
       if (AppData.instance.hasToken) 'Token': AppData.instance.token,
       'Request': {
         ...?body,
@@ -29,52 +45,132 @@ abstract class Request {
 
 /// Optional response marker (handy for typing/mapping).
 abstract class UseCaseResponse {
-  const UseCaseResponse();
+  final bool success;
+  final String message;
+  final dynamic error;
+
+  const UseCaseResponse({
+    this.success = true,
+    this.message = '',
+    this.error,
+  });
+
+  const UseCaseResponse.fail(this.message, {this.error}) : success = false;
 }
 
 abstract class UseCase<Out extends Object, In extends Request> {
   const UseCase();
 
-  /// report error to [FailurePresenter] to show toast.
-  /// can be override to show custom error message.
   void customErrorHandler(NetworkException networkException) {
     if (networkException.wasCancelled != true) {
       FailureBus.I.emit(FailureNotice.fromNetworkException(networkException));
     }
   }
 
-  /// Template method: validates first, then runs `exec`.
-  Future<Result<Out>> call(In request) async {
-    final v = request.validate();
-    if (v != null) {
-      FailureBus.I.emit(FailureNotice(failure: v));
-      return Err(v);
-    }
-    try {
-      final out = await exec(request);
-      return Ok(out);
-    } on NetworkException catch (networkException) {
-      customErrorHandler(networkException);
-
-      /// if token was expired, then return [UnAuthenticateFailure].
-      /// it will be catch and handled in [ApiHandlerHook]
-      if (networkException.tokenExpired == true) {
-        return Err(UnAuthenticateFailure(networkException.message));
-      }
-      return Err(NetworkFailure(networkException.message, code: networkException.statusCode, response: networkException.data));
-    } catch (e, st) {
-      // If your repo already throws typed exceptions, map them here if needed.
-      FailureBus.I.emit(
-        FailureNotice(
-          failure: UnknownFailure(e.toString(), cause: e, stackTrace: st),
-        ),
-      );
-      if (e is Failure) {
-        return Err(e);
-      }
-      return Err(UnknownFailure(e.toString(), cause: e, stackTrace: st));
-    }
+  Future<Result<Out>> call(In request, {bool emitFailures = true}) {
+    return guardUseCaseCall(
+      request,
+      () async => Ok(await execute(request)),
+      onNetworkException: emitFailures ? customErrorHandler : null,
+      emitFailures: emitFailures,
+    );
   }
 
-  Future<Out> exec(In request);
+  Future<Out> execute(In request);
+}
+
+/// Maps a repository [UseCaseResponse] into domain data and surfaces failures as [Err].
+abstract class RepositoryUseCase<T extends Object, R extends UseCaseResponse, In extends Request>
+    extends UseCase<T, In> {
+  const RepositoryUseCase();
+
+  Future<R> fetchFromRepository(In request);
+
+  /// Extract domain payload from a successful repository response. Return null if missing.
+  T? dataFromResponse(R response);
+
+  /// Message when [dataFromResponse] returns null despite `success: true`.
+  String missingDataMessage(R response) => 'Missing response data';
+
+  @override
+  Future<Result<T>> call(In request, {bool emitFailures = true}) {
+    return guardUseCaseCall(
+      request,
+      () async {
+        final response = await fetchFromRepository(request);
+        if (!response.success) {
+          emitRepositoryFailure(
+            response.message,
+            emit: emitFailures,
+            error: response.error,
+          );
+          return Err(repositoryFailure(response.message, error: response.error));
+        }
+        final data = dataFromResponse(response);
+        if (data == null) {
+          final msg = missingDataMessage(response);
+          emitRepositoryFailure(msg, emit: emitFailures, error: response.error);
+          return Err(repositoryFailure(msg, error: response.error));
+        }
+        return Ok(data);
+      },
+      onNetworkException: emitFailures ? customErrorHandler : null,
+      emitFailures: emitFailures,
+    );
+  }
+
+  @override
+  Future<T> execute(In request) async {
+    final response = await fetchFromRepository(request);
+    if (!response.success) {
+      emitRepositoryFailure(response.message, error: response.error);
+      throw repositoryFailure(response.message, error: response.error);
+    }
+    final data = dataFromResponse(response);
+    if (data == null) {
+      final msg = missingDataMessage(response);
+      emitRepositoryFailure(msg, error: response.error);
+      throw repositoryFailure(msg, error: response.error);
+    }
+    return data;
+  }
+}
+
+/// Side-effect repository calls with no payload on success.
+abstract class RepositoryVoidUseCase<R extends UseCaseResponse, In extends Request>
+    extends UseCase<Unit, In> {
+  const RepositoryVoidUseCase();
+
+  Future<R> fetchFromRepository(In request);
+
+  @override
+  Future<Result<Unit>> call(In request, {bool emitFailures = true}) {
+    return guardUseCaseCall(
+      request,
+      () async {
+        final response = await fetchFromRepository(request);
+        if (!response.success) {
+          emitRepositoryFailure(
+            response.message,
+            emit: emitFailures,
+            error: response.error,
+          );
+          return Err(repositoryFailure(response.message, error: response.error));
+        }
+        return Ok(Unit.value);
+      },
+      onNetworkException: emitFailures ? customErrorHandler : null,
+      emitFailures: emitFailures,
+    );
+  }
+
+  @override
+  Future<Unit> execute(In request) async {
+    final response = await fetchFromRepository(request);
+    if (!response.success) {
+      emitRepositoryFailure(response.message, error: response.error);
+      throw repositoryFailure(response.message, error: response.error);
+    }
+    return Unit.value;
+  }
 }

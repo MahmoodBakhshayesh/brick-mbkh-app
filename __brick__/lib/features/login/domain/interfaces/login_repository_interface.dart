@@ -7,8 +7,6 @@ import '/features/login/usecases/register_usecase.dart';
 
 import '../../usecases/confirm_register_usecase.dart';
 import '../../usecases/login_usecase.dart';
-import '../entities/bootstrap_class.dart';
-import '../entities/check_phone_response_entity.dart';
 import '../entities/login_response.dart';
 
 abstract class LoginRepositoryInterface {

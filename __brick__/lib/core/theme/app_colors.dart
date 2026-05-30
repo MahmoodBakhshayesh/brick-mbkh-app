@@ -12,6 +12,10 @@ class AppColors {
   static const borderColor = Color(0xFFE0E0E0);
   static const borderColor1 = Color(0xFFE9E9E9);
   static const borderColor2 = Color(0xFF6C6C6C);
+  static const scaffoldBackgroundColorDark = Color(0xff312D2A);
+  static const textColorDark = Color(0xFF341F14);
+  static const hintColor = Color(0xFF736E6B);
+  static const black24 = Color.fromRGBO(0, 0, 0, 0.24);
   static const errorColor = Color(0xFFB00020);
   static const appBarBackground = Color(0xFF6094E7);
   static const foregroundColor = Color(0xFF5A6F8A);

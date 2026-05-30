@@ -97,11 +97,11 @@ class _AppNewButtonState extends State<AppNewButton> {
         style: ButtonStyle(
           fixedSize: WidgetStatePropertyAll(Size.fromHeight(widget.height)),
           shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),side: BorderSide(
-              color: foreground.withOpacity(0.12)
+              color: foreground.withValues(alpha: 0.12)
           ))),
           padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
           shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-          backgroundColor: WidgetStatePropertyAll(c.withOpacity(widget.flat?0: widget.fade ? 0.3 : 1)),
+          backgroundColor: WidgetStatePropertyAll(c.withValues(alpha: widget.flat?0: widget.fade ? 0.3 : 1)),
           foregroundColor: WidgetStatePropertyAll(foreground),
         ),
         child: Row(

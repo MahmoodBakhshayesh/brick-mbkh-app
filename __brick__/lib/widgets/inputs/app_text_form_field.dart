@@ -364,7 +364,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
         style: widget.style,
         placeholder: widget.placeholder,
         minLines: widget.minLines,
-        placeholderStyle: const TextStyle(color: Color(0xffC4C4C4),fontFamily: "Kookfa"),
+        placeholderStyle: const TextStyle(color: Color(0xffC4C4C4),fontFamily: 'Kookfa'),
         prefix: widget.prefixIcon ?? widget.prefix,
         suffix: finalSuffix,
         decoration: BoxDecoration(

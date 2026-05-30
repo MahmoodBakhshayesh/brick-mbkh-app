@@ -14,23 +14,15 @@ import 'package:flutter/widgets.dart';
 /// for more information.
 class UnboundedViewport extends Viewport {
   UnboundedViewport({
-    Key? key,
-    AxisDirection axisDirection = AxisDirection.down,
-    AxisDirection? crossAxisDirection,
+    super.key,
+    super.axisDirection,
+    super.crossAxisDirection,
     double anchor = 0.0,
-    required ViewportOffset offset,
-    Key? center,
-    double? cacheExtent,
-    List<Widget> slivers = const <Widget>[],
-  })  : _anchor = anchor,
-        super(
-            key: key,
-            axisDirection: axisDirection,
-            crossAxisDirection: crossAxisDirection,
-            offset: offset,
-            center: center,
-            cacheExtent: cacheExtent,
-            slivers: slivers);
+    required super.offset,
+    super.center,
+    super.cacheExtent,
+    super.slivers,
+  })  : _anchor = anchor;
 
   // [Viewport] enforces constraints on [Viewport.anchor], so we need our own
   // version.
@@ -63,21 +55,14 @@ class UnboundedViewport extends Viewport {
 class UnboundedRenderViewport extends RenderViewport {
   /// Creates a viewport for [RenderSliver] objects.
   UnboundedRenderViewport({
-    AxisDirection axisDirection = AxisDirection.down,
-    required AxisDirection crossAxisDirection,
-    required ViewportOffset offset,
+    super.axisDirection,
+    required super.crossAxisDirection,
+    required super.offset,
     double anchor = 0.0,
-    List<RenderSliver>? children,
-    RenderSliver? center,
-    double? cacheExtent,
-  })  : _anchor = anchor,
-        super(
-            axisDirection: axisDirection,
-            crossAxisDirection: crossAxisDirection,
-            offset: offset,
-            center: center,
-            cacheExtent: cacheExtent,
-            children: children);
+    super.children,
+    super.center,
+    super.cacheExtent,
+  })  : _anchor = anchor;
 
   static const int _maxLayoutCycles = 10;
 
@@ -100,7 +85,6 @@ class UnboundedRenderViewport extends RenderViewport {
 
   @override
   set anchor(double value) {
-    assert(value != null);
     if (value == _anchor) return;
     _anchor = value;
     markNeedsLayout();
@@ -124,7 +108,6 @@ class UnboundedRenderViewport extends RenderViewport {
 
   @override
   Rect describeSemanticsClip(RenderSliver? child) {
-    assert(axis != null);
 
     if (_calculatedCacheExtent == null) {
       return semanticBounds;
@@ -178,7 +161,6 @@ class UnboundedRenderViewport extends RenderViewport {
     double correction;
     var count = 0;
     do {
-      assert(offset.pixels != null);
       correction = _attemptLayout(mainAxisExtent, crossAxisExtent,
           offset.pixels + centerOffsetAdjustment);
       if (correction != 0.0) {
@@ -189,8 +171,9 @@ class UnboundedRenderViewport extends RenderViewport {
         final bottom = _maxScrollExtent - mainAxisExtent * (1.0 - anchor);
         final maxScrollOffset = math.max(math.min(0.0, top), bottom);
         final minScrollOffset = math.min(top, maxScrollOffset);
-        if (offset.applyContentDimensions(minScrollOffset, maxScrollOffset))
+        if (offset.applyContentDimensions(minScrollOffset, maxScrollOffset)) {
           break;
+        }
         // *** End of difference from [RenderViewport].
       }
       count += 1;

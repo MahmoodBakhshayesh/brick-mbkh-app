@@ -9,10 +9,16 @@ sealed class Result<T> {
 
   Failure get error => (this as Err<T>).error;
 
-  R fold<R>({required R Function(T response) ok, required R Function(Failure failure) err}) => switch (this) {
+  R fold<R>({required R Function(T value) ok, required R Function(Failure failure) err}) => switch (this) {
     Ok<T>(:final value) => ok(value),
     Err<T>(:final error) => err(error),
   };
+}
+
+/// Sentinel for void/side-effect use cases.
+final class Unit {
+  const Unit._();
+  static const value = Unit._();
 }
 
 final class Ok<T> extends Result<T> {

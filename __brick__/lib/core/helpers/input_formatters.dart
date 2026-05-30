@@ -20,10 +20,10 @@ class MyInputFormatter {
 TextEditingController tcFromIntValue(int? num, {bool isZeroValid = true}) {
   if (num == null) return TextEditingController();
   if (isZeroValid) {
-    TextEditingController tc = TextEditingController.fromValue(TextEditingValue(text: num == 0 ? "0" : num.toString(), selection: TextSelection.fromPosition(TextPosition(offset: num.toString().length))));
+    TextEditingController tc = TextEditingController.fromValue(TextEditingValue(text: num == 0 ? '0' : num.toString(), selection: TextSelection.fromPosition(TextPosition(offset: num.toString().length))));
     return tc;
   } else {
-    String numS = num == 0 ? "" : "$num";
+    String numS = num == 0 ? '' : '$num';
     TextEditingController tc = TextEditingController.fromValue(TextEditingValue(text: numS, selection: TextSelection.fromPosition(TextPosition(offset: numS.length))));
     return tc;
   }
@@ -82,7 +82,7 @@ class DateTextFormatter extends TextInputFormatter {
         int? typedYear = int.tryParse(newString.substring(0,4))??0;
         int year = max(typedYear,minDate.year);
         year = min(year, maxDate.year);
-        newString = "$year";
+        newString = '$year';
         newString += seperator;
       }
       if (i == 5) {

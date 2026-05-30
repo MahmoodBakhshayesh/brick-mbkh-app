@@ -55,7 +55,7 @@ class AppDatePicker extends StatefulWidget {
   final BorderRadius? radius;
 
   const AppDatePicker({
-    Key? key,
+    super.key,
     this.label,
     this.value,
     this.valueFormat,
@@ -99,21 +99,20 @@ class AppDatePicker extends StatefulWidget {
     this.autofocus = false,
     this.isPassword = false,
     this.readOnly = false,
-  }) : super(key: key);
+  });
 
   @override
   State<AppDatePicker> createState() => _AppDatePickerState();
 }
 
 class _AppDatePickerState extends State<AppDatePicker> {
-  String? _errorMsg;
   bool obscureText = false;
   TextEditingController? controller;
 
   @override
   void didUpdateWidget(covariant AppDatePicker oldWidget) {
     if (widget.value != oldWidget.value) {
-      controller?.text = widget.value == null ? "" : widget.valueFormat?.format(widget.value!) ?? widget.value?.format_yyMMddSlash ?? '';
+      controller?.text = widget.value == null ? '' : widget.valueFormat?.format(widget.value!) ?? widget.value?.formatYyMmDdSlash ?? '';
     }
 
     // setState(() {});
@@ -129,10 +128,7 @@ class _AppDatePickerState extends State<AppDatePicker> {
       } else {
         controller = TextEditingController();
       }
-      controller?.text = widget.value == null ? "" : widget.valueFormat?.format(widget.value!) ?? widget.value.format_yyMMddSlash;
-      controller?.addListener(() {
-        _errorMsg = widget.validator?.call(controller!.text);
-      });
+      controller?.text = widget.value == null ? '' : widget.valueFormat?.format(widget.value!) ?? widget.value.formatYyMmDdSlash;
       obscureText = widget.isPassword;
       super.initState();
     }
@@ -153,12 +149,12 @@ class _AppDatePickerState extends State<AppDatePicker> {
         if (context.isDesktop) {
           showDatePicker(context: context, barrierDismissible: false, initialDate: widget.value ?? DateTime.now(), firstDate: widget.min ?? DateTime(1900), lastDate: widget.max ?? DateTime(3000)).then((v) {
             if (v == null) {
-              log("v is null just return");
+              log('v is null just return');
             }else{
-              log("v is no null is $v");
+              log('v is no null is $v');
             }
             widget.onChanged(v);
-            controller?.text = v?.format_yyMMddSlash ?? '';
+            controller?.text = v?.formatYyMmDdSlash ?? '';
           });
         } else {
           showBoardDateTimePicker(
@@ -171,12 +167,13 @@ class _AppDatePickerState extends State<AppDatePicker> {
             maximumDate: widget.max ?? DateTime(3000),
             minimumDate: widget.min ?? DateTime(1900),
             // headerWidget: MyTextField(),
-            options: BoardDateTimeOptions(boardTitle: ((widget.label ?? '').isEmpty) ? "${widget.placeholder}" : widget.label, boardTitleTextStyle: TextStyle(fontSize: 22)),
+            options: BoardDateTimeOptions(boardTitle: ((widget.label ?? '').isEmpty) ? '${widget.placeholder}' : widget.label, boardTitleTextStyle: TextStyle(fontSize: 22)),
           ).then((v) {
-            final newVal = v ?? widget.value;
-            widget.onChanged(newVal);
-            if (v == null) return;
-            controller?.text = newVal == null ? "" : widget.valueFormat?.format(newVal) ?? newVal.format_yyMMddSlash ?? '';
+            final picked = v ?? widget.value;
+            widget.onChanged(picked);
+            if (picked == null) return;
+            controller?.text =
+                widget.valueFormat?.format(picked) ?? picked.formatYyMmDdSlash;
           });
         }
         // showDatePicker(
@@ -191,11 +188,10 @@ class _AppDatePickerState extends State<AppDatePicker> {
         //
         //   widget.onChanged(v);
         //   if(v == null) return;
-        //   controller?.text = v?.format_yyMMddSlash ?? '';
+        //   controller?.text = v?.formatYyMmDdSlash ?? '';
         // });
       },
-      child: Container(
-        child: AppTextFieldNew(
+      child: AppTextFieldNew(
           headerBgColor: widget.headerBgColor,
           bodyBgColor: widget.bodyBgColor,
           radius: widget.radius,
@@ -216,7 +212,6 @@ class _AppDatePickerState extends State<AppDatePicker> {
           suffixIcon: widget.suffixIcon ?? SizedBox(height: 22),
           controller: controller,
         ),
-      ),
     );
     // return SizedBox(
     //   height: widget.height,
@@ -334,20 +329,20 @@ class _AppDatePickerState extends State<AppDatePicker> {
   }
 }
 
-extension Formm on DateTime? {
-  String get format_yyMMdd {
-    return this == null ? "" : DateFormat("yy-MM-dd").format(this!);
+extension DateTimeFormatting on DateTime? {
+  String get formatYyMmDd {
+    return this == null ? '' : DateFormat('yy-MM-dd').format(this!);
   }
 
-  String get format_yyyyMMdd {
-    return this == null ? "" : DateFormat("yyyy-MM-dd").format(this!);
+  String get formatYyyyMmDd {
+    return this == null ? '' : DateFormat('yyyy-MM-dd').format(this!);
   }
 
-  String get format_yyMMddSlash {
-    return this == null ? "" : DateFormat("dd,MMM yyyy").format(this!);
+  String get formatYyMmDdSlash {
+    return this == null ? '' : DateFormat('dd,MMM yyyy').format(this!);
   }
 
-  String get format_yyMMddSlashTrim {
-    return this == null ? "" : DateFormat("dd,MMMyyyy").format(this!);
+  String get formatYyMmDdSlashTrim {
+    return this == null ? '' : DateFormat('dd,MMMyyyy').format(this!);
   }
 }

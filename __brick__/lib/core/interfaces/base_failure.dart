@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../helpers/failure_logger.dart';
 import '../helpers/network_exception.dart';
 import 'base_result.dart';
-import 'base_usecase.dart';
 
 enum FailureSeverity { info, warning, error, critical }
 
@@ -37,22 +37,37 @@ class FailureBus {
 
   static final FailureBus I = FailureBus._();
 
-  final _ctrl = StreamController<FailureNotice>.broadcast(sync: true);
+  /// Async broadcast — avoids re-entrant [add] while a listener is still handling an event.
+  final _ctrl = StreamController<FailureNotice>.broadcast();
 
   Stream<FailureNotice> get stream => _ctrl.stream;
 
+  static bool _shouldIgnoreMessage(String message) {
+    return message.contains('visitChildElements() called during build') ||
+        message.contains('Cannot fire new event') ||
+        message.contains('Controller is already firing an event');
+  }
+
   void emit(FailureNotice n) {
-    if(n.failure.message.contains("Cannot fire new event")){
-      return;
-    }
-    if (!_ctrl.isClosed) _ctrl.add(n);
+    if (_shouldIgnoreMessage(n.failure.message)) return;
+    FailureLogger.logNotice(n);
+    _enqueue(n);
   }
 
   void emitMsg(String n) {
-    if (!_ctrl.isClosed) _ctrl.add(FailureNotice(failure: ServerFailure(n)));
+    if (_shouldIgnoreMessage(n)) return;
+    final notice = FailureNotice(failure: ServerFailure(n));
+    FailureLogger.logNotice(notice);
+    _enqueue(notice);
   }
 
-
+  void _enqueue(FailureNotice n) {
+    if (_ctrl.isClosed) return;
+    scheduleMicrotask(() {
+      if (_ctrl.isClosed) return;
+      _ctrl.add(n);
+    });
+  }
 
   void dispose() => _ctrl.close();
 }

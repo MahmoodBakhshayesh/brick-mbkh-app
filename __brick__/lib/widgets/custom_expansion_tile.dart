@@ -149,7 +149,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
         ClipRect(
           child: SizeTransition(
             sizeFactor: _heightFactor,
-            axisAlignment: -1.0,
+            alignment: Alignment.topCenter,
             child: Padding(
               padding: widget.childrenPadding ?? EdgeInsets.zero,
               child: widget.expandedBody ?? const SizedBox.shrink(),

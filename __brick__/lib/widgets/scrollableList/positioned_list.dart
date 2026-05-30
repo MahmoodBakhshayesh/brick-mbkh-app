@@ -26,7 +26,7 @@ import 'wrapping.dart';
 class PositionedList extends StatefulWidget {
   /// Create a [PositionedList].
   const PositionedList({
-    Key? key,
+    super.key,
     required this.itemCount,
     required this.itemBuilder,
     this.separatorBuilder,
@@ -44,10 +44,7 @@ class PositionedList extends StatefulWidget {
     this.addSemanticIndexes = true,
     this.addRepaintBoundaries = true,
     this.addAutomaticKeepAlives = true,
-  })  : assert(itemCount != null),
-        assert(itemBuilder != null),
-        assert((positionedIndex == 0) || (positionedIndex < itemCount)),
-        super(key: key);
+  })  : assert((positionedIndex == 0) || (positionedIndex < itemCount));
 
   /// Number of items the [itemBuilder] can produce.
   final int itemCount;

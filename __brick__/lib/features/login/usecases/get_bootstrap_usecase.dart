@@ -1,8 +1,6 @@
-import '/features/login/domain/entities/login_response.dart';
 import '../../../core/interfaces/base_result.dart';
 import '../../../core/interfaces/base_usecase.dart';
 import '../domain/entities/bootstrap_class.dart';
-import '../domain/interfaces/login_repository_interface.dart';
 import '../domain/repositories/login_repository.dart';
 
 class GetBootstrapRequest extends Request {
@@ -15,30 +13,24 @@ class GetBootstrapRequest extends Request {
   Failure? validate() => null;
 
   @override
-  Map<String, dynamic> toJson() => {
-    "Body": {
-      "Request": {
-        "ID": version,
-      },
-    },
-  };
+  Map<String, dynamic> toJson() => Request.apiEnvelope({'ID': version});
 }
 
 class GetBootstrapResponse extends UseCaseResponse {
-  final bool success;
   final Bootstrap? bootstrap;
-  final String message;
 
-  GetBootstrapResponse({required this.success, this.bootstrap, this.message = ''});
+  GetBootstrapResponse({super.success, this.bootstrap, super.message, super.error});
 }
 
-class GetBootstrapUsecase extends UseCase<GetBootstrapResponse, GetBootstrapRequest> {
+class GetBootstrapUsecase extends RepositoryUseCase<Bootstrap, GetBootstrapResponse, GetBootstrapRequest> {
   final LoginRepository _repository;
 
   GetBootstrapUsecase(this._repository);
 
   @override
-  Future<GetBootstrapResponse> exec(GetBootstrapRequest request) async {
-    return _repository.getBootstrap(request);
-  }
+  Future<GetBootstrapResponse> fetchFromRepository(GetBootstrapRequest request) =>
+      _repository.getBootstrap(request);
+
+  @override
+  Bootstrap? dataFromResponse(GetBootstrapResponse response) => response.bootstrap;
 }

@@ -32,7 +32,7 @@ class AppOverlaysHelper extends BaseOverlaysHelper {
 
   @override
   Future<T?> showAppDialog<T>(WidgetBuilder builder, {bool barrierDismissible = true, RouteSettings? settings}) {
-    log("${context == null}");
+    log('${context == null}');
     return _getHelper().showAppDialog(builder, barrierDismissible: barrierDismissible, settings: settings);
   }
 

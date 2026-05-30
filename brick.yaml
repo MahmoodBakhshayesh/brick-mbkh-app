@@ -1,7 +1,7 @@
 name: mbkh_app
 repository: https://github.com/MahmoodBakhshayesh/brick-mbkh-app
 description: Create a full MBKH Flutter starter project structure with rules and seeded feature.
-version: 0.1.0+7
+version: 0.2.2+1
 vars:
   project_name:
     type: string

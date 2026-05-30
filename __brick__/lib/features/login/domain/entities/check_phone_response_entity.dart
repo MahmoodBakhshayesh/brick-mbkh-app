@@ -35,20 +35,20 @@ class CheckPhoneResponseData {
       );
 
   factory CheckPhoneResponseData.fromJson(Map<String, dynamic> json) => CheckPhoneResponseData(
-    exists: expectBool(json, "Exists"),
-    isConfirmed: expectBool(json, "IsConfirmed"),
-    requiresRegistration: expectBool(json, "RequiresRegistration"),
-    canLoginWithPassword: expectBool(json, "CanLoginWithPassword"),
-    isProfileCompleted: expectBool(json, "IsProfileCompleted"),
-    canLoginWithOtp: expectBool(json, "CanLoginWithOtp"),
+    exists: expectBool(json, 'Exists'),
+    isConfirmed: expectBool(json, 'IsConfirmed'),
+    requiresRegistration: expectBool(json, 'RequiresRegistration'),
+    canLoginWithPassword: expectBool(json, 'CanLoginWithPassword'),
+    isProfileCompleted: expectBool(json, 'IsProfileCompleted'),
+    canLoginWithOtp: expectBool(json, 'CanLoginWithOtp'),
   );
 
   Map<String, dynamic> toJson() => {
-    "Exists": exists,
-    "IsConfirmed": isConfirmed,
-    "RequiresRegistration": requiresRegistration,
-    "CanLoginWithPassword": canLoginWithPassword,
-    "IsProfileCompleted": isProfileCompleted,
-    "CanLoginWithOtp": canLoginWithOtp,
+    'Exists': exists,
+    'IsConfirmed': isConfirmed,
+    'RequiresRegistration': requiresRegistration,
+    'CanLoginWithPassword': canLoginWithPassword,
+    'IsProfileCompleted': isProfileCompleted,
+    'CanLoginWithOtp': canLoginWithOtp,
   };
 }

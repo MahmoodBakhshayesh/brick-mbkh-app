@@ -8,7 +8,7 @@ class HomeViewTablet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(homeControllerProvider);
+    ref.watch(homeControllerProvider);
     return Scaffold(
       appBar: HomeAppBarTablet(),
       body: Column(children: []),
@@ -39,7 +39,7 @@ class HomeAppBarTablet extends StatelessWidget implements PreferredSizeWidget {
                   Row(
                     children: [
                       Text(
-                        "Home",
+                        'Home',
                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
                       ),
                       Spacer(),

@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'dart:developer' as dev;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,7 +64,7 @@ class AppTextFieldNew extends ConsumerStatefulWidget {
   final List<int> rowLabelRatio;
 
   const AppTextFieldNew({
-    Key? key,
+    super.key,
     this.label,
     this.headerBgColor,
     this.bodyBgColor = Colors.white,
@@ -117,14 +115,13 @@ class AppTextFieldNew extends ConsumerStatefulWidget {
     this.autofocus = false,
     this.isPassword = false,
     this.readOnly = false,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<AppTextFieldNew> createState() => _MyTextFieldNewState();
 }
 
 class _MyTextFieldNewState extends ConsumerState<AppTextFieldNew> {
-  String? _errorMsg;
   bool obscureText = false;
 
   @override
@@ -132,7 +129,6 @@ class _MyTextFieldNewState extends ConsumerState<AppTextFieldNew> {
     if (mounted) {
       if (widget.controller != null) {
         widget.controller!.addListener(() {
-          _errorMsg = widget.validator?.call(widget.controller!.text);
           widget.onChanged?.call(widget.controller!.text);
           // setState(() {});
         });
@@ -153,7 +149,6 @@ class _MyTextFieldNewState extends ConsumerState<AppTextFieldNew> {
   @override
   Widget build(BuildContext context) {
     bool hasError = (widget.validator?.call(widget.controller?.text ?? '') ?? '').isNotEmpty;
-    bool requiredError = widget.required && (widget.controller?.text ?? '').isEmpty;
     Color validationColor = widget.validationColor ?? Colors.red;
     bool validationMode = ref.watch(globalFormValidationMode) && widget.required && widget.controller!.text.isEmpty;
     BoxBorder? border = validationMode
@@ -321,7 +316,7 @@ class _MyTextFieldNewState extends ConsumerState<AppTextFieldNew> {
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             border: Border.all(color: validationColor),
-                                            color: validationColor.withOpacity(0.05),
+                                            color: validationColor.withValues(alpha: 0.05),
                                             borderRadius: BorderRadius.circular(5),
                                           ),
                                           child: Row(
@@ -380,7 +375,7 @@ class _MyTextFieldNewState extends ConsumerState<AppTextFieldNew> {
                         child: Row(
                           children: [
                             Text(
-                              "${widget.label}",
+                              '${widget.label}',
                               style: widget.labelStyle,
                             ),
                             widget.required
@@ -441,7 +436,7 @@ class _MyTextFieldNewState extends ConsumerState<AppTextFieldNew> {
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                           border: Border.all(color: validationColor),
-                                          color: validationColor.withOpacity(0.05),
+                                          color: validationColor.withValues(alpha: 0.05),
                                           borderRadius: BorderRadius.circular(5),
                                         ),
                                         child: Row(

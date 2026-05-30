@@ -1,9 +1,7 @@
 import 'dart:math';
 import '/widgets/app_date_picker.dart';
-import '/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../../../core/helpers/input_formatters.dart';
 import '../../../../buttons/app_button.dart';
 import '../../board_datetime_options.dart';
 import '../../utils/board_datetime_options_extension.dart';
@@ -134,7 +132,7 @@ class BoardDateTimeHeaderState extends State<BoardDateTimeHeader> {
 
   void changeListener() {
     if(widget.pickerType == DateTimePickerType.date) {
-      dateC.text = dateState.value.format_yyMMdd.replaceAll("-", "/");
+      dateC.text = dateState.value.formatYyMmDd.replaceAll('-', '/');
     }
     setState(() => judgeDay());
   }
@@ -166,7 +164,7 @@ class BoardDateTimeHeaderState extends State<BoardDateTimeHeader> {
     final child = Container(
       height: widget.wide ? 64 : 52,
       margin: EdgeInsets.only(top: widget.topMargin, left: 8, right: 8),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: widget.foregroundColor.withOpacity(0.99)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: widget.foregroundColor.withValues(alpha: 0.99)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
@@ -209,19 +207,6 @@ class BoardDateTimeHeaderState extends State<BoardDateTimeHeader> {
   List<Widget> _dateItems(BuildContext context) {
     final today = DateTime.now();
     final tomorrow = today.addDay(1);
-    return [
-      Expanded(
-        child: AppTextFieldNew(
-          height: widget.wide ? 64 : 52,
-          keyboardType: TextInputType.datetime,
-          placeholder: "yyyy/mm/dd",
-          // maxLength: 10,
-          controller: dateC,
-          inputFormatters: [DateTextFormatter(minDate: widget.minimumDate, maxDate: widget.maximumDate)],
-          style: TextStyle(height: 2, fontSize: 16),
-        ),
-      ),
-    ];
     return [
       if (widget.wide)
         const SizedBox(width: 24)
@@ -269,16 +254,16 @@ class BoardDateTimeHeaderState extends State<BoardDateTimeHeader> {
       //     ),
       //   ),
       if (now.isWithinRange(widget.minimumDate, widget.maximumDate)) const SizedBox(width: 8),
-      _textButton(context, "-1 H", () => widget.onChangTime(pastHour), selected: false),
+      _textButton(context, '-1 H', () => widget.onChangTime(pastHour), selected: false),
       if (now.isWithinRange(widget.minimumDate, widget.maximumDate)) const SizedBox(width: 8),
-      _textButton(context, "-1 M", () => widget.onChangTime(pastMin), selected: false),
+      _textButton(context, '-1 M', () => widget.onChangTime(pastMin), selected: false),
       if (now.isWithinRange(widget.minimumDate, widget.maximumDate)) const SizedBox(width: 8),
-      _textButton(context, "Now", () => widget.onChangTime(DateTime.now()), selected: false),
+      _textButton(context, 'Now', () => widget.onChangTime(DateTime.now()), selected: false),
       if (now.isWithinRange(widget.minimumDate, widget.maximumDate)) const SizedBox(width: 8),
-      _textButton(context, "+1 M", () => widget.onChangTime(laterMin), selected: false),
+      _textButton(context, '+1 M', () => widget.onChangTime(laterMin), selected: false),
       if (laterHour.isWithinRange(widget.minimumDate, widget.maximumDate)) ...[
         const SizedBox(width: 8),
-        _textButton(context, "+1 H", () {
+        _textButton(context, '+1 H', () {
           widget.onChangTime(laterHour);
         }, selected: false),
         const SizedBox(width: 8),
@@ -300,7 +285,7 @@ class BoardDateTimeHeaderState extends State<BoardDateTimeHeader> {
 
   Widget _textButton(BuildContext context, String title, void Function() callback, {bool selected = false}) {
     return Material(
-      color: selected ? widget.activeColor : widget.backgroundColor.withOpacity(0.8),
+      color: selected ? widget.activeColor : widget.backgroundColor.withValues(alpha: 0.8),
       clipBehavior: Clip.antiAlias,
       borderRadius: BorderRadius.circular(4),
       child: InkWell(
@@ -309,7 +294,7 @@ class BoardDateTimeHeaderState extends State<BoardDateTimeHeader> {
           height: 32,
           padding: EdgeInsets.symmetric(horizontal: widget.wide ? 24 : 12),
           child: Center(
-            child: Text(title, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: selected ? widget.activeTextColor : widget.textColor?.withOpacity(0.9))),
+            child: Text(title, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: selected ? widget.activeTextColor : widget.textColor?.withValues(alpha: 0.9))),
           ),
         ),
       ),
@@ -383,7 +368,7 @@ class _BoardDateTimeNoneButtonHeaderState extends State<BoardDateTimeNoneButtonH
             CustomIconButton(
               icon: Icons.view_day_rounded,
               bgColor: widget.options.getForegroundColor(context),
-              fgColor: widget.options.getTextColor(context)?.withOpacity(0.8),
+              fgColor: widget.options.getTextColor(context)?.withValues(alpha: 0.8),
               onTap: widget.onCalendar,
               buttonSize: buttonSize,
               child: Transform.rotate(angle: pi * 4 * widget.calendarAnimation.value, child: Icon(widget.calendarAnimation.value > 0.5 ? Icons.view_day_rounded : Icons.calendar_month_rounded, size: 20)),
@@ -440,7 +425,7 @@ class _BoardDateTimeNoneButtonHeaderState extends State<BoardDateTimeNoneButtonH
 
     Widget child = widget.modal
         ? CustomIconButton(icon: Icons.check_circle_rounded, bgColor: widget.options.getActiveColor(context), fgColor: widget.options.getActiveTextColor(context), onTap: widget.onClose, buttonSize: buttonSize)
-        : CustomIconButton(icon: Icons.close_rounded, bgColor: widget.options.getForegroundColor(context), fgColor: widget.options.getTextColor(context)?.withOpacity(0.8), onTap: widget.onClose, buttonSize: buttonSize);
+        : CustomIconButton(icon: Icons.close_rounded, bgColor: widget.options.getForegroundColor(context), fgColor: widget.options.getTextColor(context)?.withValues(alpha: 0.8), onTap: widget.onClose, buttonSize: buttonSize);
 
     return [
       // if (closeKeyboard != null) ...[
@@ -471,7 +456,7 @@ class TopTitleWidget extends StatelessWidget {
               children: [
                 AppButton(
                   height: 35,
-                  label: "Cancel",
+                  label: 'Cancel',
                   color: Colors.grey,
                   onPressed: () {
                     Navigator.pop(context);
@@ -499,7 +484,7 @@ class TopTitleWidget extends StatelessWidget {
             children: [
               AppButton(
                 height: 35,
-                label: "Submit",
+                label: 'Submit',
                 onPressed: () {
                   onSubmit.call();
                 },

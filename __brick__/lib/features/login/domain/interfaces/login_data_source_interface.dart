@@ -18,7 +18,7 @@ abstract class LoginDataSourceInterface {
   Future<LoginResponseData?> login(LoginRequest request);
   Future<Bootstrap?> getBootstrap(GetBootstrapRequest request);
   Future<LoginResponseData?> confirmOtpLogin(ConfirmOtpLoginRequest request);
-  Future<String> confirmRegister(ConfirmRegisterRequest request);
+  Future<String?> confirmRegister(ConfirmRegisterRequest request);
   Future<void> completeProfile(CompleteProfileRequest request);
   Future<void> otpLogin(OtpLoginRequest request);
 }

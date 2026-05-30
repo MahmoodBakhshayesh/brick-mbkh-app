@@ -7,7 +7,9 @@ import 'core/helpers/app_scroll_behavior.dart';
 import 'core/navigation/router_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
+import 'widgets/app_status_bar_shell.dart';
 import 'widgets/global_failure_listener.dart';
+import 'widgets/unified_input_theme_shell.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -16,34 +18,35 @@ class App extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
 
-    return  GlobalFailureListener(
-      child: ToastificationWrapper(
-        child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-          child: MaterialApp.router(
-            // key: rootNavigatorKey,
-            debugShowCheckedModeBanner: false,
-            title: Const.appName,
-            theme: AppTheme.theme,
-            routerConfig: router,
-            scrollBehavior: const AppScrollBehavior(),
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            locale: ref.watch(localizationProvider),
-            builder: (context, child) {
-              return Container(
-                color: const Color(0xffC7DCFF),
-                alignment: Alignment.center,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: Center(
-                    child: ClipRect(
-                      child: child,
+    return AppStatusBarShell(
+      child: UnifiedInputThemeShell(
+        child: GlobalFailureListener(
+          child: ToastificationWrapper(
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+              child: MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                title: Const.appName,
+                theme: AppTheme.theme,
+                routerConfig: router,
+                scrollBehavior: const AppScrollBehavior(),
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                locale: ref.watch(localizationProvider),
+                builder: (context, child) {
+                  return Container(
+                    color: const Color(0xffC7DCFF),
+                    alignment: Alignment.center,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 600),
+                      child: Center(
+                        child: ClipRect(child: child),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),

@@ -29,15 +29,15 @@ class BasicInfoModel {
   );
 
   factory BasicInfoModel.fromJson(Map<String, dynamic> json) => BasicInfoModel(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "DisplayName": displayName,
-    "DisplayNameEn": displayNameEn,
+    'Id': id,
+    'DisplayName': displayName,
+    'DisplayNameEn': displayNameEn,
   };
 
   @override
@@ -65,13 +65,13 @@ class Bootstrap {
       );
 
   factory Bootstrap.fromJson(Map<String, dynamic> json) => Bootstrap(
-    appConfig: AppConfig.fromJson(expectMap(json, "AppConfig")),
-    data: BootstrapData.fromJson(expectMap(json, "Data")),
+    appConfig: AppConfig.fromJson(expectMap(json, 'AppConfig')),
+    data: BootstrapData.fromJson(expectMap(json, 'Data')),
   );
 
   Map<String, dynamic> toJson() => {
-    "AppConfig": appConfig.toJson(),
-    "Data": data.toJson(),
+    'AppConfig': appConfig.toJson(),
+    'Data': data.toJson(),
   };
 }
 
@@ -118,25 +118,25 @@ class AppConfig {
       );
 
   factory AppConfig.fromJson(Map<String, dynamic> json) => AppConfig(
-    bootstrapVersion: expectInt(json, "BootstrapVersion"),
-    minimumSupportedAppVersion: expectString(json, "MinimumSupportedAppVersion"),
-    latestAppVersion: expectString(json, "LatestAppVersion"),
-    forceUpdate: expectBool(json, "ForceUpdate"),
-    forceUpdateMessage: expectNullableString(json, "ForceUpdateMessage"),
-    forceUpdateUrl: expectNullableString(json, "ForceUpdateUrl"),
-    isMaintenanceMode: expectBool(json, "IsMaintenanceMode"),
-    maintenanceMessage: expectNullableString(json, "MaintenanceMessage"),
+    bootstrapVersion: expectInt(json, 'BootstrapVersion'),
+    minimumSupportedAppVersion: expectString(json, 'MinimumSupportedAppVersion'),
+    latestAppVersion: expectString(json, 'LatestAppVersion'),
+    forceUpdate: expectBool(json, 'ForceUpdate'),
+    forceUpdateMessage: expectNullableString(json, 'ForceUpdateMessage'),
+    forceUpdateUrl: expectNullableString(json, 'ForceUpdateUrl'),
+    isMaintenanceMode: expectBool(json, 'IsMaintenanceMode'),
+    maintenanceMessage: expectNullableString(json, 'MaintenanceMessage'),
   );
 
   Map<String, dynamic> toJson() => {
-    "BootstrapVersion": bootstrapVersion,
-    "MinimumSupportedAppVersion": minimumSupportedAppVersion,
-    "LatestAppVersion": latestAppVersion,
-    "ForceUpdate": forceUpdate,
-    "ForceUpdateMessage": forceUpdateMessage,
-    "ForceUpdateUrl": forceUpdateUrl,
-    "IsMaintenanceMode": isMaintenanceMode,
-    "MaintenanceMessage": maintenanceMessage,
+    'BootstrapVersion': bootstrapVersion,
+    'MinimumSupportedAppVersion': minimumSupportedAppVersion,
+    'LatestAppVersion': latestAppVersion,
+    'ForceUpdate': forceUpdate,
+    'ForceUpdateMessage': forceUpdateMessage,
+    'ForceUpdateUrl': forceUpdateUrl,
+    'IsMaintenanceMode': isMaintenanceMode,
+    'MaintenanceMessage': maintenanceMessage,
   };
 }
 
@@ -144,9 +144,9 @@ class BrewMethod extends BasicInfoModel {
   BrewMethod({required super.id, required super.displayName, required super.displayNameEn});
 
   factory BrewMethod.fromJson(Map<String, dynamic> json) => BrewMethod(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 }
 
@@ -154,9 +154,9 @@ class ProcessMethod extends BasicInfoModel  {
   ProcessMethod({required super.id, required super.displayName, required super.displayNameEn});
 
   factory ProcessMethod.fromJson(Map<String, dynamic> json) => ProcessMethod(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 
 }
@@ -165,9 +165,9 @@ class GrindSize extends BasicInfoModel  {
   GrindSize({required super.id, required super.displayName, required super.displayNameEn});
 
   factory GrindSize.fromJson(Map<String, dynamic> json) => GrindSize(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 
 }
@@ -176,9 +176,9 @@ class EquipmentType extends BasicInfoModel  {
   EquipmentType({required super.id, required super.displayName, required super.displayNameEn});
 
   factory EquipmentType.fromJson(Map<String, dynamic> json) => EquipmentType(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 
 }
@@ -187,9 +187,9 @@ class RoastLevel extends BasicInfoModel {
   RoastLevel({required super.id, required super.displayName, required super.displayNameEn});
 
   factory RoastLevel.fromJson(Map<String, dynamic> json) => RoastLevel(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 
 
@@ -200,9 +200,9 @@ class Profession extends BasicInfoModel {
   Profession({required super.id, required super.displayName, required super.displayNameEn});
 
   factory Profession.fromJson(Map<String, dynamic> json) => Profession(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 
 
@@ -261,72 +261,72 @@ class BootstrapData {
   factory BootstrapData.fromJson(Map<String, dynamic> json) => BootstrapData(
     brewMethods: expectListOf<BrewMethod>(
       json,
-      "BrewMethods",
+      'BrewMethods',
       (x) => BrewMethod.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <BrewMethod>[],
     ),
     countries: expectListOf<Country>(
       json,
-      "Countries",
+      'Countries',
       (x) => Country.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <Country>[],
     ),
     processMethods: expectListOf<ProcessMethod>(
       json,
-      "ProcessMethods",
+      'ProcessMethods',
       (x) => ProcessMethod.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <ProcessMethod>[],
     ),
     roastLevels: expectListOf<RoastLevel>(
       json,
-      "RoastLevels",
+      'RoastLevels',
       (x) => RoastLevel.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <RoastLevel>[],
     ),
-    settings: Settings.fromJson(expectMap(json, "Settings")),
+    settings: Settings.fromJson(expectMap(json, 'Settings')),
     brewMethodStepTemplates: expectListOf<BrewMethodStepTemplate>(
       json,
-      "BrewMethodStepTemplates",
+      'BrewMethodStepTemplates',
       (x) => BrewMethodStepTemplate.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <BrewMethodStepTemplate>[],
     ),
     professions: expectListOf<Profession>(
       json,
-      "Professions",
+      'Professions',
       (x) => Profession.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <Profession>[],
     ),
     flavors: expectListOf<CoffeeFlavorCategory>(
       json,
-      "Flavors",
+      'Flavors',
       (x) => CoffeeFlavorCategory.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <CoffeeFlavorCategory>[],
     ),
     grindSizes: expectListOf<GrindSize>(
       json,
-      "GrindSizes",
+      'GrindSizes',
       (x) => GrindSize.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <GrindSize>[],
     ),
     equipmentTypes: expectListOf<EquipmentType>(
       json,
-      "EquipmentTypes",
+      'EquipmentTypes',
       (x) => EquipmentType.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <EquipmentType>[],
     ),
   );
 
   Map<String, dynamic> toJson() => {
-    "BrewMethods": List<dynamic>.from(brewMethods.map((x) => x.toJson())),
-    "Countries": List<dynamic>.from(countries.map((x) => x.toJson())),
-    "ProcessMethods": List<dynamic>.from(processMethods.map((x) => x.toJson())),
-    "RoastLevels": List<dynamic>.from(roastLevels.map((x) => x.toJson())),
-    "Settings": settings.toJson(),
-    "BrewMethodStepTemplates": List<dynamic>.from(brewMethodStepTemplates.map((x) => x.toJson())),
-    "Professions": List<dynamic>.from(professions.map((x) => x.toJson())),
-    "Flavors": List<dynamic>.from(flavors.map((x) => x.toJson())),
-    "GrindSizes": List<dynamic>.from(grindSizes.map((x) => x.toJson())),
-    "EquipmentTypes": List<dynamic>.from(equipmentTypes.map((x) => x.toJson())),
+    'BrewMethods': List<dynamic>.from(brewMethods.map((x) => x.toJson())),
+    'Countries': List<dynamic>.from(countries.map((x) => x.toJson())),
+    'ProcessMethods': List<dynamic>.from(processMethods.map((x) => x.toJson())),
+    'RoastLevels': List<dynamic>.from(roastLevels.map((x) => x.toJson())),
+    'Settings': settings.toJson(),
+    'BrewMethodStepTemplates': List<dynamic>.from(brewMethodStepTemplates.map((x) => x.toJson())),
+    'Professions': List<dynamic>.from(professions.map((x) => x.toJson())),
+    'Flavors': List<dynamic>.from(flavors.map((x) => x.toJson())),
+    'GrindSizes': List<dynamic>.from(grindSizes.map((x) => x.toJson())),
+    'EquipmentTypes': List<dynamic>.from(equipmentTypes.map((x) => x.toJson())),
   };
 
   List<CoffeeFlavor> get getAllFlavors => flavors.map((a)=>a.items).reduce((a,b)=>[...a,...b]);
@@ -372,24 +372,24 @@ class CoffeeFlavorCategory {
       );
 
   factory CoffeeFlavorCategory.fromJson(Map<String, dynamic> json) => CoffeeFlavorCategory(
-    id: expectInt(json, "Id"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
-    displayOrder: expectInt(json, "DisplayOrder"),
+    id: expectInt(json, 'Id'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
+    displayOrder: expectInt(json, 'DisplayOrder'),
     items: expectListOf<CoffeeFlavor>(
       json,
-      "Items",
+      'Items',
       (x) => CoffeeFlavor.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <CoffeeFlavor>[],
     ),
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "DisplayName": displayName,
-    "DisplayNameEn": displayNameEn,
-    "DisplayOrder": displayOrder,
-    "Items": List<dynamic>.from(items.map((x) => x.toJson())),
+    'Id': id,
+    'DisplayName': displayName,
+    'DisplayNameEn': displayNameEn,
+    'DisplayOrder': displayOrder,
+    'Items': List<dynamic>.from(items.map((x) => x.toJson())),
   };
 }
 
@@ -424,19 +424,19 @@ class CoffeeFlavor {
       );
 
   factory CoffeeFlavor.fromJson(Map<String, dynamic> json) => CoffeeFlavor(
-    id: expectInt(json, "Id"),
-    categoryId: expectInt(json, "CategoryId"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
-    displayOrder: expectInt(json, "DisplayOrder"),
+    id: expectInt(json, 'Id'),
+    categoryId: expectInt(json, 'CategoryId'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
+    displayOrder: expectInt(json, 'DisplayOrder'),
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "CategoryId": categoryId,
-    "DisplayName": displayName,
-    "DisplayNameEn": displayNameEn,
-    "DisplayOrder": displayOrder,
+    'Id': id,
+    'CategoryId': categoryId,
+    'DisplayName': displayName,
+    'DisplayNameEn': displayNameEn,
+    'DisplayOrder': displayOrder,
   };
 
   @override
@@ -494,34 +494,34 @@ class BrewMethodStepTemplate {
       );
 
   factory BrewMethodStepTemplate.fromJson(Map<String, dynamic> json) => BrewMethodStepTemplate(
-    id: expectInt(json, "Id"),
-    brewMethodId: expectInt(json, "BrewMethodId"),
-    stepDefinitionId: expectInt(json, "StepDefinitionId"),
-    code: expectString(json, "Code"),
-    name: expectString(json, "Name"),
-    nameEn: expectString(json, "NameEn", defaultValue: ''),
-    icon: expectString(json, "Icon", defaultValue: ''),
-    displayOrder: expectInt(json, "DisplayOrder"),
-    isOptional: expectBool(json, "IsOptional", defaultValue: false),
+    id: expectInt(json, 'Id'),
+    brewMethodId: expectInt(json, 'BrewMethodId'),
+    stepDefinitionId: expectInt(json, 'StepDefinitionId'),
+    code: expectString(json, 'Code'),
+    name: expectString(json, 'Name'),
+    nameEn: expectString(json, 'NameEn', defaultValue: ''),
+    icon: expectString(json, 'Icon', defaultValue: ''),
+    displayOrder: expectInt(json, 'DisplayOrder'),
+    isOptional: expectBool(json, 'IsOptional', defaultValue: false),
     fields: expectListOf<StepField>(
       json,
-      "Fields",
+      'Fields',
       (x) => StepField.fromJson(Map<String, dynamic>.from(x as Map)),
       defaultValue: const <StepField>[],
     ),
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "BrewMethodId": brewMethodId,
-    "StepDefinitionId": stepDefinitionId,
-    "Code": code,
-    "Name": name,
-    "NameEn": nameEn,
-    "Icon": icon,
-    "DisplayOrder": displayOrder,
-    "IsOptional": isOptional,
-    "Fields": List<dynamic>.from(fields.map((x) => x.toJson())),
+    'Id': id,
+    'BrewMethodId': brewMethodId,
+    'StepDefinitionId': stepDefinitionId,
+    'Code': code,
+    'Name': name,
+    'NameEn': nameEn,
+    'Icon': icon,
+    'DisplayOrder': displayOrder,
+    'IsOptional': isOptional,
+    'Fields': List<dynamic>.from(fields.map((x) => x.toJson())),
   };
 }
 
@@ -584,35 +584,35 @@ class StepField {
       );
 
   factory StepField.fromJson(Map<String, dynamic> json) => StepField(
-    id: expectInt(json, "Id"),
-    fieldDefinitionId: expectInt(json, "FieldDefinitionId"),
-    code: expectString(json, "Code"),
-    name: expectString(json, "Name"),
-    nameEn: expectString(json, "NameEn", defaultValue: ''),
-    type: expectString(json, "Type"),
-    icon: expectString(json, "Icon", defaultValue: ''),
-    unit: expectNullableString(json, "Unit"),
-    placeholder: expectString(json, "Placeholder", defaultValue: ''),
-    defaultValue: expectString(json, "DefaultValue", defaultValue: ''),
-    isRequired: expectBool(json, "IsRequired", defaultValue: false),
-    isVisible: expectBool(json, "IsVisible", defaultValue: true),
+    id: expectInt(json, 'Id'),
+    fieldDefinitionId: expectInt(json, 'FieldDefinitionId'),
+    code: expectString(json, 'Code'),
+    name: expectString(json, 'Name'),
+    nameEn: expectString(json, 'NameEn', defaultValue: ''),
+    type: expectString(json, 'Type'),
+    icon: expectString(json, 'Icon', defaultValue: ''),
+    unit: expectNullableString(json, 'Unit'),
+    placeholder: expectString(json, 'Placeholder', defaultValue: ''),
+    defaultValue: expectString(json, 'DefaultValue', defaultValue: ''),
+    isRequired: expectBool(json, 'IsRequired', defaultValue: false),
+    isVisible: expectBool(json, 'IsVisible', defaultValue: true),
   );
 
-  dynamic get getDefault => type =="number"?int.tryParse(defaultValue):defaultValue;
+  dynamic get getDefault => type =='number'?int.tryParse(defaultValue):defaultValue;
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "FieldDefinitionId": fieldDefinitionId,
-    "Code": code,
-    "Name": name,
-    "NameEn": nameEn,
-    "Type": type,
-    "Icon": icon,
-    "Unit": unit,
-    "Placeholder": placeholder,
-    "DefaultValue": defaultValue,
-    "IsRequired": isRequired,
-    "IsVisible": isVisible,
+    'Id': id,
+    'FieldDefinitionId': fieldDefinitionId,
+    'Code': code,
+    'Name': name,
+    'NameEn': nameEn,
+    'Type': type,
+    'Icon': icon,
+    'Unit': unit,
+    'Placeholder': placeholder,
+    'DefaultValue': defaultValue,
+    'IsRequired': isRequired,
+    'IsVisible': isVisible,
   };
 }
 
@@ -644,17 +644,17 @@ class Country {
       );
 
   factory Country.fromJson(Map<String, dynamic> json) => Country(
-    id: expectInt(json, "Id"),
-    code: expectString(json, "Code"),
-    displayName: expectString(json, "DisplayName"),
-    displayNameEn: expectString(json, "DisplayNameEn", defaultValue: ''),
+    id: expectInt(json, 'Id'),
+    code: expectString(json, 'Code'),
+    displayName: expectString(json, 'DisplayName'),
+    displayNameEn: expectString(json, 'DisplayNameEn', defaultValue: ''),
   );
 
   Map<String, dynamic> toJson() => {
-    "Id": id,
-    "Code": code,
-    "DisplayName": displayName,
-    "DisplayNameEn": displayNameEn,
+    'Id': id,
+    'Code': code,
+    'DisplayName': displayName,
+    'DisplayNameEn': displayNameEn,
   };
 
   @override
@@ -688,16 +688,16 @@ class Settings {
       );
 
   factory Settings.fromJson(Map<String, dynamic> json) => Settings(
-    language: expectString(json, "Language", defaultValue: 'en'),
-    temperatureUnit: expectString(json, "TemperatureUnit", defaultValue: 'C'),
-    weightUnit: expectString(json, "WeightUnit", defaultValue: 'g'),
-    volumeUnit: expectString(json, "VolumeUnit", defaultValue: 'ml'),
+    language: expectString(json, 'Language', defaultValue: 'en'),
+    temperatureUnit: expectString(json, 'TemperatureUnit', defaultValue: 'C'),
+    weightUnit: expectString(json, 'WeightUnit', defaultValue: 'g'),
+    volumeUnit: expectString(json, 'VolumeUnit', defaultValue: 'ml'),
   );
 
   Map<String, dynamic> toJson() => {
-    "Language": language,
-    "TemperatureUnit": temperatureUnit,
-    "WeightUnit": weightUnit,
-    "VolumeUnit": volumeUnit,
+    'Language': language,
+    'TemperatureUnit': temperatureUnit,
+    'WeightUnit': weightUnit,
+    'VolumeUnit': volumeUnit,
   };
 }

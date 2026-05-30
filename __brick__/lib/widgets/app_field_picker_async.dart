@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:developer' as dev;
 
 import '../core/extensions/context_extension.dart';
-import '../core/theme/app_colors.dart';
 import 'app_filed_picker_desktop.dart';
 import 'app_text_field.dart';
 import 'buttons/app_button.dart';
@@ -127,7 +124,7 @@ class _AppFieldPickerAsyncState<T> extends State<AppFieldPickerAsync<T>> {
   @override
   void didUpdateWidget(covariant AppFieldPickerAsync<T> oldWidget) {
     if (widget.value != oldWidget.value && mounted) {
-      controller.text = widget.value == null ? "" : widget.valueToString?.call(widget.value!) ?? widget.value.toString();
+      controller.text = widget.value == null ? '' : widget.valueToString?.call(widget.value as T) ?? widget.value.toString();
       value.value = widget.value;
       setState(() {});
     }
@@ -137,7 +134,6 @@ class _AppFieldPickerAsyncState<T> extends State<AppFieldPickerAsync<T>> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
     if (context.isDesktop) {
       return ValueListenableBuilder<T?>(
         valueListenable: value,
@@ -149,8 +145,9 @@ class _AppFieldPickerAsyncState<T> extends State<AppFieldPickerAsync<T>> {
               }
               if (widget.showPickerForDesktop) {
                 if (!widget.locked) {
-                  dev.log("pick item");
+                  dev.log('pick item');
                   await _loadItems();
+                  if (!context.mounted) return;
                   showModalBottomSheet(
                     isScrollControlled: true,
                     context: context,
@@ -176,7 +173,7 @@ class _AppFieldPickerAsyncState<T> extends State<AppFieldPickerAsync<T>> {
                     elevation: 2,
                   ).then((v) {
                     if (v == Null) {
-                      dev.log("should null value");
+                      dev.log('should null value');
                       value.value = null;
                       widget.onChange?.call(null);
                       setState(() {});
@@ -223,8 +220,8 @@ class _AppFieldPickerAsyncState<T> extends State<AppFieldPickerAsync<T>> {
                           suggestion: widget.suggestion,
                           placeholder: widget.placeholder,
                           onChange: (v) {
-                            if (v == Null || v.toString() == "null") {
-                              dev.log("should null value");
+                            if (v == Null || v.toString() == 'null') {
+                              dev.log('should null value');
                               value.value = null;
                               widget.onChange?.call(null);
                               setState(() {});
@@ -293,7 +290,7 @@ class _AppFieldPickerAsyncState<T> extends State<AppFieldPickerAsync<T>> {
                     elevation: 2,
                   ).then((v) {
                     if (v == Null) {
-                      dev.log("should null value");
+                      dev.log('should null value');
                       value.value = null;
                       widget.onChange?.call(null);
                       setState(() {});
@@ -417,7 +414,6 @@ class _PickerSheetWidgetState<T> extends State<PickerSheetWidget<T>> {
     // dev.log(widget.searchBuilder!(filtered.first));
     // dev.log((widget.searchBuilder?.call(filtered.first) ?? filtered.first.toString()).toLowerCase().indexOf(query).toString());
     return filtered.where((a) => !widget.suggestion.contains(a)).toList();
-    return filtered;
   }
 
   void _scrollToSelected() {
@@ -507,7 +503,8 @@ class _PickerSheetWidgetState<T> extends State<PickerSheetWidget<T>> {
         widget.suggestion.where((a) => searchC.text.toLowerCase().isEmpty || (widget.searchBuilder?.call(a) ?? a.toString()).toLowerCase().split(' ').any((sp) => sp.startsWith(searchC.text.toLowerCase()))).toList().length == 1 &&
         !autoPop) {
       autoPop = true;
-      Future.delayed(Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (!context.mounted) return;
         Navigator.of(context).pop(widget.suggestion.first);
       });
     }
@@ -533,10 +530,10 @@ class _PickerSheetWidgetState<T> extends State<PickerSheetWidget<T>> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("${widget.label}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        child: Text(widget.label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
-                    if (widget.hasClear) AppButton(label: "Clear", reverse: true, color: Colors.blueAccent, onPressed: () => Navigator.of(context).pop(Null)),
+                    if (widget.hasClear) AppButton(label: 'Clear', reverse: true, color: Colors.blueAccent, onPressed: () => Navigator.of(context).pop(Null)),
                     const CloseButton(),
                   ],
                 ),
@@ -570,7 +567,7 @@ class _PickerSheetWidgetState<T> extends State<PickerSheetWidget<T>> {
                       child: Row(
                         children: [
                           Expanded(child: widget.itemToWidget?.call(s) ?? Text(s.toString())),
-                          Text("Suggestion", style: TextStyle(color: Colors.black45, fontSize: 10)),
+                          Text('Suggestion', style: TextStyle(color: Colors.black45, fontSize: 10)),
                         ],
                       ),
                     ),
@@ -590,7 +587,7 @@ class _PickerSheetWidgetState<T> extends State<PickerSheetWidget<T>> {
                       onTap: () => Navigator.of(context).pop(item),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.blueAccent.withOpacity(0.3) : const Color(0xffF2F3F6),
+                          color: isSelected ? Colors.blueAccent.withValues(alpha: 0.3) : const Color(0xffF2F3F6),
                           border: const Border(bottom: BorderSide(color: Colors.white)),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),

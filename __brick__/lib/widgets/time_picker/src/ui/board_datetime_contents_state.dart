@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'dart:developer' as dev;
 import '../board_datetime_options.dart';
 import '../options/board_item_option.dart';
 import '../utils/board_datetime_options_extension.dart';
@@ -112,7 +111,7 @@ abstract class BoardDatetimeContentState<T extends BoardDateTimeCommonResult,
   DateTime? get maximumDate => widget.maximumDate;
 
   /// Set new value
-  void setNewValue(DateTime val, {bool byPicker = false,String from  = ""});
+  void setNewValue(DateTime val, {bool byPicker = false,String from  = ''});
 
   /// on change date and datetime result
   void onChanged(DateTime date, T result);
@@ -397,7 +396,7 @@ abstract class BoardDatetimeContentState<T extends BoardDateTimeCommonResult,
         maximumDate,
       );
     }
-    setNewValue(opt.calcDate(newVal),from: "change by pciker");
+    setNewValue(opt.calcDate(newVal),from: 'change by pciker');
   }
 
   /// Process date changes from calendar or header
@@ -424,7 +423,7 @@ abstract class BoardDatetimeContentState<T extends BoardDateTimeCommonResult,
       }
     }
     // if(pickerType == DateTimePickerType.date) {
-      setNewValue(newVal, from: "change date");
+      setNewValue(newVal, from: 'change date');
     // }
   }
 
@@ -445,7 +444,7 @@ abstract class BoardDatetimeContentState<T extends BoardDateTimeCommonResult,
         x.changeDate(newVal);
       }
     }
-    setNewValue(newVal,from: "change time");
+    setNewValue(newVal,from: 'change time');
   }
 
   void changeDateTime(DateTime val) {
@@ -470,6 +469,6 @@ abstract class BoardDatetimeContentState<T extends BoardDateTimeCommonResult,
         x.changeDate(newVal);
       }
     }
-    setNewValue(newVal,from: "change date time");
+    setNewValue(newVal,from: 'change date time');
   }
 }

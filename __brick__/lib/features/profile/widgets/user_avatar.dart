@@ -1,7 +1,5 @@
-import 'dart:developer';
 
 import '/core/constants/apis.dart';
-import '/features/login/login_view_state.dart';
 import '/features/profile/profile_state.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +51,6 @@ class UserAvatar extends ConsumerWidget {
                 }
 
                 return FastCachedImage(url:photoUrl,fit: BoxFit.contain);
-                return const Placeholder();
               },
             ),
           ),

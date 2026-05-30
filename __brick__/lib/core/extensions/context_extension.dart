@@ -75,7 +75,6 @@ extension BuldContextMore on BuildContext {
 
   /// Heuristics that work well across platforms, including web-on-mobile.
   DeviceClass get deviceClass {
-    return DeviceClass.phone;
     // 1) Anything on a mobile browser is at least "phone-like"
     if (SystemInfo.isWebMobile) {
       // But allow promotion to tablet if it’s really large (iPad in landscape)

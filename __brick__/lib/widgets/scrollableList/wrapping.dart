@@ -37,24 +37,16 @@ class CustomShrinkWrappingViewport extends CustomViewport {
   ///
   /// The [offset] argument must not be null.
   CustomShrinkWrappingViewport({
-    Key? key,
-    AxisDirection axisDirection = AxisDirection.down,
-    AxisDirection? crossAxisDirection,
+    super.key,
+    super.axisDirection,
+    super.crossAxisDirection,
     double anchor = 0.0,
-    required ViewportOffset offset,
+    required super.offset,
     List<RenderSliver>? children,
-    Key? center,
-    double? cacheExtent,
-    List<Widget> slivers = const <Widget>[],
-  })  : _anchor = anchor,
-        super(
-            key: key,
-            axisDirection: axisDirection,
-            crossAxisDirection: crossAxisDirection,
-            offset: offset,
-            center: center,
-            cacheExtent: cacheExtent,
-            slivers: slivers);
+    super.center,
+    super.cacheExtent,
+    super.slivers,
+  })  : _anchor = anchor;
 
   // [Viewport] enforces constraints on [Viewport.anchor], so we need our own
   // version.
@@ -122,22 +114,14 @@ class CustomRenderShrinkWrappingViewport extends CustomRenderViewport {
   /// The [offset] must be specified. For testing purposes, consider passing a
   /// [ViewportOffset.zero] or [ViewportOffset.fixed].
   CustomRenderShrinkWrappingViewport({
-    AxisDirection axisDirection = AxisDirection.down,
-    required AxisDirection crossAxisDirection,
-    required ViewportOffset offset,
+    super.axisDirection,
+    required super.crossAxisDirection,
+    required super.offset,
     double anchor = 0.0,
-    List<RenderSliver>? children,
-    RenderSliver? center,
-    double? cacheExtent,
-  })  : _anchor = anchor,
-        super(
-          axisDirection: axisDirection,
-          crossAxisDirection: crossAxisDirection,
-          offset: offset,
-          center: center,
-          cacheExtent: cacheExtent,
-          children: children,
-        );
+    super.children,
+    super.center,
+    super.cacheExtent,
+  })  : _anchor = anchor;
 
   double _anchor;
 
@@ -409,7 +393,7 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
   /// The [cacheExtent] must be specified if the [cacheExtentStyle] is
   /// not [CacheExtentStyle.pixel].
   CustomViewport({
-    Key? key,
+    super.key,
     this.axisDirection = AxisDirection.down,
     this.crossAxisDirection,
     this.anchor = 0.0,
@@ -419,15 +403,11 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
     this.cacheExtentStyle = CacheExtentStyle.pixel,
     this.clipBehavior = Clip.hardEdge,
     List<Widget> slivers = const <Widget>[],
-  })  : assert(offset != null),
-        assert(slivers != null),
-        assert(center == null ||
+  })  : assert(center == null ||
             slivers.where((Widget child) => child.key == center).length == 1),
-        assert(cacheExtentStyle != null),
         assert(cacheExtentStyle != CacheExtentStyle.viewport ||
             cacheExtent != null),
-        assert(clipBehavior != null),
-        super(key: key, children: slivers);
+        super(children: slivers);
 
   /// The direction in which the [offset]'s [ViewportOffset.pixels] increases.
   ///
@@ -497,7 +477,6 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
   /// otherwise, the default cross axis direction is downwards.
   static AxisDirection getDefaultCrossAxisDirection(
       BuildContext context, AxisDirection axisDirection) {
-    assert(axisDirection != null);
     switch (axisDirection) {
       case AxisDirection.up:
         assert(debugCheckHasDirectionality(
@@ -553,7 +532,7 @@ abstract class CustomViewport extends MultiChildRenderObjectWidget {
 
 class _ViewportElement extends MultiChildRenderObjectElement {
   /// Creates an element that uses the given widget as its configuration.
-  _ViewportElement(CustomViewport widget) : super(widget);
+  _ViewportElement(CustomViewport super.widget);
 
   @override
   CustomViewport get widget => super.widget as CustomViewport;
@@ -653,29 +632,19 @@ abstract class CustomRenderViewport
   /// The [offset] must be specified. For testing purposes, consider passing a
   /// [ViewportOffset.zero] or [ViewportOffset.fixed].
   CustomRenderViewport({
-    AxisDirection axisDirection = AxisDirection.down,
-    required AxisDirection crossAxisDirection,
-    required ViewportOffset offset,
+    super.axisDirection,
+    required super.crossAxisDirection,
+    required super.offset,
     double anchor = 0.0,
     List<RenderSliver>? children,
     RenderSliver? center,
-    double? cacheExtent,
-    CacheExtentStyle cacheExtentStyle = CacheExtentStyle.pixel,
-    Clip clipBehavior = Clip.hardEdge,
-  })  : assert(anchor != null),
-        assert(anchor >= 0.0 && anchor <= 1.0),
+    super.cacheExtent,
+    super.cacheExtentStyle,
+    super.clipBehavior,
+  })  : assert(anchor >= 0.0 && anchor <= 1.0),
         assert(cacheExtentStyle != CacheExtentStyle.viewport ||
             cacheExtent != null),
-        assert(clipBehavior != null),
-        _center = center,
-        super(
-          axisDirection: axisDirection,
-          crossAxisDirection: crossAxisDirection,
-          offset: offset,
-          cacheExtent: cacheExtent,
-          cacheExtentStyle: cacheExtentStyle,
-          clipBehavior: clipBehavior,
-        ) {
+        _center = center {
     addAll(children);
     if (center == null && firstChild != null) _center = firstChild;
   }
@@ -719,8 +688,9 @@ abstract class CustomRenderViewport
 
   @override
   void setupParentData(RenderObject child) {
-    if (child.parentData is! CustomSliverPhysicalContainerParentData)
+    if (child.parentData is! CustomSliverPhysicalContainerParentData) {
       child.parentData = CustomSliverPhysicalContainerParentData();
+    }
   }
 
   /// The relative position of the zero scroll offset.

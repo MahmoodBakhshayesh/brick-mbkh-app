@@ -23,7 +23,7 @@ class EmptyState extends StatelessWidget {
                 child: Center(
                   child: AspectRatio(
                     aspectRatio: 1,
-                    child:Text("SVG")
+                    child:Text('SVG')
                   ),
                 ),
               ),

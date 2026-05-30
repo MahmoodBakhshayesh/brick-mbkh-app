@@ -71,7 +71,7 @@ class AppSwitchButton extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        child: CupertinoSwitch(value: value, onChanged: disabled ? null : onChanged, activeColor: color ?? AppColors.green),
+                        child: CupertinoSwitch(value: value, onChanged: disabled ? null : onChanged, activeTrackColor: color ?? AppColors.green),
                       ),
                     ],
                   ),

@@ -38,7 +38,7 @@ class TokenExpireOverlay extends StatelessWidget {
             const SizedBox(height: 54),
             const Align(
                 alignment: AlignmentDirectional.bottomEnd,
-                child: Text("login again")
+                child: Text('login again')
             ),
           ],
         ),

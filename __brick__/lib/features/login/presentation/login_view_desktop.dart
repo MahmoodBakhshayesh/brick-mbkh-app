@@ -1,19 +1,16 @@
-import '/features/login/widgets/InitialCheckPhoneWidget.dart';
+import '/features/login/widgets/initial_check_phone_widget.dart';
 import '/features/login/widgets/complete_profile_widget.dart';
 import '/features/login/widgets/confirm_active_code_widget.dart';
 import '/features/login/widgets/login_with_otp_widget.dart';
 import '/features/login/widgets/login_with_password_widget.dart';
 import '/features/login/widgets/send_code_widget.dart';
 import '/widgets/app_lang_widget.dart';
-import '/widgets/inputs/app_text_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../core/hooks/use_interval_hook.dart';
 import '../login_controller.dart';
 import '../login_view_state.dart';
-import '../widgets/sign_up_flow.dart';
 
 
 class LoginViewDesktop extends HookConsumerWidget {
@@ -28,12 +25,15 @@ class LoginViewDesktop extends HookConsumerWidget {
     final phone = useState(phoneC.text);
     useEffect(() {
       loginController.checkUser();
+      return null;
     }, []);
     useEffect(() {
       phone.value = phoneC.text;
+      return null;
     }, [useListenable(phoneC).text]);
     useEffect(() {
       start.value = 60;
+      return null;
     }, [step]);
     final resendCode = useCallback(() async {
       start.value = 60;
@@ -43,7 +43,7 @@ class LoginViewDesktop extends HookConsumerWidget {
       start.value = 60;
       await loginController.otpLogin(phoneC.text);
     }, []);
-    final timer = useInterval(() {
+    useInterval(() {
       if (start.value < 1) return;
 
       start.value = start.value - 1;
@@ -78,6 +78,5 @@ class LoginViewDesktop extends HookConsumerWidget {
         ),
       ),
     );
-    return SignupViewPhone(myLoginController: loginController);
   }
 }

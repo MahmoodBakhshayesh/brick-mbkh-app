@@ -45,7 +45,7 @@ class LoginDataSourceLocal extends LocalDataSource implements LoginDataSourceInt
   }
 
   @override
-  Future<String> confirmRegister(ConfirmRegisterRequest request) {
+  Future<String?> confirmRegister(ConfirmRegisterRequest request) {
     // TODO: implement confirmRegister
     throw UnimplementedError();
   }

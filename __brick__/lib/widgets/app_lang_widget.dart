@@ -16,9 +16,9 @@ class AppLangWidget extends HookConsumerWidget {
         child: TextButton.icon(
           icon: Icon(Icons.language),
           onPressed: (){
-            var next = "en";
-            if(current.languageCode == "en"){
-              next = "fa";
+            var next = 'en';
+            if(current.languageCode == 'en'){
+              next = 'fa';
             }
             ref.read(localizationProvider.notifier).update((s)=>Locale(next));
           },

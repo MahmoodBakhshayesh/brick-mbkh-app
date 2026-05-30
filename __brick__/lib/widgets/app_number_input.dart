@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:input_quantity/input_quantity.dart';
 
-import '../core/theme/app_colors.dart';
 
 class AppDoubleInput extends StatefulWidget {
   final String label;
@@ -18,7 +17,7 @@ class AppDoubleInput extends StatefulWidget {
 class _AppDoubleInputState extends State<AppDoubleInput> {
   @override
   Widget build(BuildContext context) {
-      return Container(
+      return SizedBox(
         height: 70,
       child: Column(
 

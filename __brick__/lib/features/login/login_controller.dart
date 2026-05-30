@@ -1,24 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
-import '/core/interfaces/base_failure.dart';
-import '/core/interfaces/base_result.dart';
-import '/di.dart';
-import '/features/login/usecases/check_phone_usecase.dart';
-import '/features/login/usecases/complete_profile_usecase.dart';
-import '/features/login/usecases/confirm_register_usecase.dart';
-import '/features/login/usecases/get_bootstrap_usecase.dart';
-import '/features/login/usecases/otp_login_usecase.dart';
-import '/features/login/usecases/register_usecase.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:app_device_net_info/app_device_net_info.dart';
+import 'package:{{project_name}}/core/helpers/api_service.dart';
+import 'package:{{project_name}}/core/helpers/use_case_runner.dart';
+import 'package:{{project_name}}/core/interfaces/base_result.dart';
+import 'package:{{project_name}}/di.dart';
+import 'package:{{project_name}}/features/login/usecases/check_phone_usecase.dart';
+import 'package:{{project_name}}/features/login/usecases/complete_profile_usecase.dart';
+import 'package:{{project_name}}/features/login/usecases/confirm_register_usecase.dart';
+import 'package:{{project_name}}/features/login/usecases/get_bootstrap_usecase.dart';
+import 'package:{{project_name}}/features/login/usecases/otp_login_usecase.dart';
+import 'package:{{project_name}}/features/login/usecases/register_usecase.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:otp_autofill/otp_autofill.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:readsms/readsms.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 import '../../core/controllers/base_controller.dart';
 import '../../core/data/app_data.dart';
 import 'domain/entities/bootstrap_class.dart';
@@ -42,6 +39,7 @@ class LoginController extends BaseController {
 
   @override
   void init() {
+    setInitialHeaders();
     loadBootstrap(null);
     super.init();
   }
@@ -52,17 +50,14 @@ class LoginController extends BaseController {
     ref.read(loginIsLoadingProvider.notifier).state = true;
 
     try {
-      final request = LoginRequest(phone: username, password: password);
-      final loginResponse = await _loginUsecase.exec(request);
-
-      if (loginResponse.success) {
-        loginWithResponse(loginResponse.loginData!,null);
-      } else {
-        logger.w("Login failed for user: '$username'. Reason: ${loginResponse.message}");
-
-        FailureBus.I.emit(FailureNotice(failure: ServerFailure(loginResponse.message)));
-        ref.read(loginErrorMessageProvider.notifier).state = loginResponse.message;
-      }
+      final loginData = await runUseCase(
+        _loginUsecase,
+        LoginRequest(phone: username, password: password),
+      );
+      loginWithResponse(loginData, null);
+    } on Failure catch (f) {
+      logger.w("Login failed for user: '$username'. Reason: ${f.message}");
+      ref.read(loginErrorMessageProvider.notifier).state = f.message;
     } catch (e, st) {
       logger.e("An exception occurred during login for user: '$username'", error: e, stackTrace: st);
       ref.read(loginErrorMessageProvider.notifier).state = e.toString();
@@ -72,114 +67,72 @@ class LoginController extends BaseController {
   }
 
   Future<void> checkPhone(String phone) async {
-    final checkPhoneUsecase = GetIt.instance.get<CheckPhoneUsecase>();
-    final checkPhoneResponse = await checkPhoneUsecase.exec(CheckPhoneRequest(phone: phone));
-    if (checkPhoneResponse.success) {
-      logger.i("Login successful for user: '${checkPhoneResponse.checkPhoneResponseData!.exists}'");
-      logger.i(jsonEncode(checkPhoneResponse.checkPhoneResponseData!.toJson()));
-      final data = checkPhoneResponse.checkPhoneResponseData!;
+    try {
+      final data = await runUseCase(
+        locator<CheckPhoneUsecase>(),
+        CheckPhoneRequest(phone: phone),
+      );
+      logger.i("Login successful for user: '${data.exists}'");
+      logger.i(jsonEncode(data.toJson()));
       if (data.exists) {
         if (data.requiresRegistration) {
           ref.read(signupStepProvider.notifier).update((s) => 2);
           sendSMS(phone);
         } else {
-          // if(data.canLoginWithPassword){
           if (!data.isProfileCompleted) {
-            // ref.read(signupStepProvider.notifier).update((s)=>3);
             ref.read(signupStepProvider.notifier).update((s) => 2);
             sendSMS(phone);
           } else {
             ref.read(signupStepProvider.notifier).update((s) => 4);
           }
-
-          // }else if(data.canLoginWithOtp){
-          //   ref.read(signupStepProvider.notifier).update((s)=>5);
-          // }
         }
       } else {
         ref.read(signupStepProvider.notifier).update((s) => 2);
         sendSMS(phone);
-        // ref.read(signupStepProvider.notifier).update((s) => 1);
       }
-    } else {
-      FailureBus.I.emitMsg(checkPhoneResponse.message);
-      logger.e("error -> ${checkPhoneResponse.message}");
+    } on Failure catch (f) {
+      logger.e('error -> ${f.message}');
     }
   }
 
   Future<void> checkUser() async {
-    // logger.e("checkUser");
-    // ref.read(checkingUserProvider.notifier).update((s) => true);
     final sp = await sharedPreferencesAsync;
-    // String? bootstrapJson = sp.getString("Bootstrap");
-    // if (bootstrapJson == null) {
-    //   return;
-    // }
-    // Bootstrap bootstrap = Bootstrap.fromJson(jsonDecode(bootstrapJson));
-    // AppData.instance.setBootstrap(bootstrap);
-    String? userJson = sp.getString("User");
+    String? userJson = sp.getString('User');
     if (userJson == null) {
       return;
     }
 
     LoginResponseData loginData = LoginResponseData.fromJson(jsonDecode(userJson));
-    loginWithResponse(loginData,null);
-    // await goEcips();
-
-    // Future.delayed(const Duration(seconds: 1), () {
-    //   ref.read(checkingUserProvider.notifier).update((s) => false);
-    // });
+    loginWithResponse(loginData, null);
   }
 
   Future<void> confirmRegister(String phone, String code) async {
-    final confirmRegisterUsecase = GetIt.instance.get<ConfirmRegisterUsecase>();
-    final confirmRegisterResponse = await confirmRegisterUsecase.exec(ConfirmRegisterRequest(phone: phone, code: code));
-    if (confirmRegisterResponse.success) {
+    try {
+      final token = await runUseCase(
+        locator<ConfirmRegisterUsecase>(),
+        ConfirmRegisterRequest(phone: phone, code: code),
+      );
       logger.i("User Confrimed'");
-      AppData.instance.setToken(confirmRegisterResponse.token!);
+      AppData.instance.setToken(token);
       ref.read(signupStepProvider.notifier).update((s) => 3);
-    } else {
-      FailureBus.I.emitMsg(confirmRegisterResponse.message);
+    } on Failure {
+      // FailureBus already notified by use case
     }
   }
 
   listenForCode() async {
     if (Platform.isAndroid || Platform.isIOS) {
-      // OTPInteractor _otpInteractor = OTPInteractor();
-      // final appSignature = await _otpInteractor.getAppSignature();
-      //
-      // if (kDebugMode) {
-      //   logger.e('Your app signature: $appSignature');
-      // }
-      // late OTPTextEditController controller =
-      //     OTPTextEditController(
-      //       codeLength: 5,
-      //       //ignore: avoid_print
-      //       onCodeReceive: (code) => logger.w('Your Application receive code - $code'),
-      //       otpInteractor: _otpInteractor,
-      //     )..startListenUserConsent(
-      //       (code) {
-      //         final exp = RegExp(r'(\d{5})');
-      //         return exp.stringMatch(code ?? '') ?? '';
-      //       },
-      //       strategies: [
-      //         // SampleStrategy(),
-      //       ],
-      //     );
-
-      // final sms = await SmsAutoFill().listenForCode();
-
       getSmsReadPermission().then((v) {
         if (v) {
-          final _plugin = Readsms();
-          _plugin.read();
-          _plugin.smsStream.listen((event) {
+          final plugin = Readsms();
+          plugin.read();
+          plugin.smsStream.listen((event) {
             String? extractedCode = extractCodeFromMessage(event.body);
             if (extractedCode == null) {
               return;
             } else {
               ref.read(receivedCodeProvider.notifier).update((s) => extractedCode);
-              _plugin.dispose();
+              plugin.dispose();
             }
           });
         }
@@ -188,7 +141,6 @@ class LoginController extends BaseController {
   }
 
   Future<bool> getSmsReadPermission() async {
-    // return true;
     if (await Permission.sms.status == PermissionStatus.granted) {
       return true;
     } else {
@@ -201,80 +153,83 @@ class LoginController extends BaseController {
   }
 
   String? extractCodeFromMessage(String message) {
-    // Regular expression to match a 5-digit code
-    if (!message.toLowerCase().contains("blucher.coffee".toLowerCase())) {
+    if (!message.toLowerCase().contains('blucher.coffee'.toLowerCase())) {
       return null;
     }
     final RegExp codeRegExp = RegExp(r'\b\d{6}\b');
     final match = codeRegExp.firstMatch(message);
     if (match != null) {
-      return match.group(0); // Return the matched code
-    }
-    return null; // Return null if no code is found
-  }
-
-  Future<void> sendSMS(String phone) async {
-    final registerUsecase = GetIt.instance.get<RegisterUsecase>();
-    final registerResponse = await registerUsecase.exec(RegisterRequest(phone: phone));
-    if (registerResponse.success) {
-      logger.i("User Register Done'");
-      ref.read(signupStepProvider.notifier).update((s) => 2);
-      listenForCode();
-    } else {
-      FailureBus.I.emitMsg(registerResponse.message);
-    }
-  }
-
-  Future<void> loginWithResponse(LoginResponseData loginData,Bootstrap? bs) async {
-    ref.read(authenticatedUserProvider.notifier).state = loginData.user;
-
-    // final bootstrap =bs?? await loadBootstrap(null);
-    // if (bootstrap == null) return;
-
-    AppData.instance.setUserId(loginData.user.id);
-    AppData.instance.setToken(loginData.accessToken);
-    final sp = await sharedPreferencesAsync;
-    await sp.setString("User", jsonEncode(loginData.toJson()));
-    // await sp.setString("Bootstrap", jsonEncode(bootstrap.toJson()));
-    ref.read(signupStepProvider.notifier).update((s) => 0);
-  }
-
-  Future<Bootstrap?> loadBootstrap(int? version) async {
-    final sp = await sharedPreferencesAsync;
-    String? bootstrapJson = sp.getString("Bootstrap");
-    if (bootstrapJson != null ) {
-      Bootstrap bootstrap = Bootstrap.fromJson(jsonDecode(bootstrapJson));
-      if(version == null || bootstrap.appConfig.bootstrapVersion == version){
-        AppData.instance.setBootstrap(bootstrap);
-        await sp.setString("Bootstrap", jsonEncode(bootstrap.toJson()));
-        getBootstrap(bootstrap.appConfig.bootstrapVersion,bootstrap);
-        return bootstrap;
-      }
-    }
-    final newBT = await getBootstrap(version,null);
-    return newBT;
-  }
-  Future<Bootstrap?> getBootstrap(int? version,Bootstrap? cached) async {
-    final sp = await sharedPreferencesAsync;
-    final getBootstrapUsecase = locator<GetBootstrapUsecase>();
-    final getBootstrapResponse = await getBootstrapUsecase.exec(GetBootstrapRequest(version: version, cached: cached));
-    if (getBootstrapResponse.success) {
-      AppData.instance.setBootstrap(getBootstrapResponse.bootstrap);
-      await sp.setString("Bootstrap", jsonEncode(getBootstrapResponse.bootstrap!.toJson()));
-      return getBootstrapResponse.bootstrap;
+      return match.group(0);
     }
     return null;
   }
 
+  Future<void> sendSMS(String phone) async {
+    final ok = await runVoidUseCase(
+      locator<RegisterUsecase>(),
+      RegisterRequest(phone: phone),
+    );
+    if (ok) {
+      logger.i("User Register Done'");
+      ref.read(signupStepProvider.notifier).update((s) => 2);
+      listenForCode();
+    }
+  }
+
+  Future<void> loginWithResponse(LoginResponseData loginData, Bootstrap? bs) async {
+    ref.read(authenticatedUserProvider.notifier).state = loginData.user;
+
+    AppData.instance.setUserId(loginData.user.id);
+    AppData.instance.setToken(loginData.accessToken);
+    final sp = await sharedPreferencesAsync;
+    await sp.setString('User', jsonEncode(loginData.toJson()));
+    ref.read(signupStepProvider.notifier).update((s) => 0);
+  }
+
+  Future<Bootstrap?> loadBootstrap(int? version) async {
+    logger.w('loadBootstrap');
+
+    final sp = await sharedPreferencesAsync;
+    String? bootstrapJson = sp.getString('Bootstrap');
+    if (bootstrapJson != null) {
+      final apiService = locator<ApiService>();
+      Bootstrap bootstrap = Bootstrap.fromJson(jsonDecode(bootstrapJson));
+      apiService.addHeader({'X-Bootstrap-Version': bootstrap.appConfig.bootstrapVersion});
+      if (version == null || bootstrap.appConfig.bootstrapVersion == version) {
+        AppData.instance.setBootstrap(bootstrap);
+        await sp.setString('Bootstrap', jsonEncode(bootstrap.toJson()));
+        getBootstrap(bootstrap.appConfig.bootstrapVersion, bootstrap);
+        return bootstrap;
+      }
+    }
+    final newBT = await getBootstrap(version, null);
+    return newBT;
+  }
+
+  Future<Bootstrap?> getBootstrap(int? version, Bootstrap? cached) async {
+    final sp = await sharedPreferencesAsync;
+    final bootstrap = await runUseCaseOrNull(
+      locator<GetBootstrapUsecase>(),
+      GetBootstrapRequest(version: version, cached: cached),
+    );
+    if (bootstrap != null) {
+      AppData.instance.setBootstrap(bootstrap);
+      await sp.setString('Bootstrap', jsonEncode(bootstrap.toJson()));
+      final apiService = locator<ApiService>();
+      apiService.addHeader({'X-Bootstrap-Version': bootstrap.appConfig.bootstrapVersion});
+    }
+    return bootstrap;
+  }
+
   Future<void> completeProfile({required String phone, required String password, required String name}) async {
     try {
-      logger.e("completeProfile");
-      final completeProfileUsecase = locator<CompleteProfileUsecase>();
-      final completeProfileResponse = await completeProfileUsecase.exec(CompleteProfileRequest(password: password, fullName: name, professionType: 100, professionTitle: 'Developer'));
-      if (completeProfileResponse.success) {
+      logger.e('completeProfile');
+      final ok = await runVoidUseCase(
+        locator<CompleteProfileUsecase>(),
+        CompleteProfileRequest(password: password, fullName: name, professionType: 100, professionTitle: 'Developer'),
+      );
+      if (ok) {
         await login(phone, password);
-      } else {
-        FailureBus.I.emitMsg(completeProfileResponse.message);
       }
     } catch (e) {
       if (e is Error) {
@@ -284,9 +239,11 @@ class LoginController extends BaseController {
   }
 
   requestOtpLogin(String phone) async {
-    final otpLoginUsecase = locator<OtpLoginUsecase>();
-    final otpLoginResponse = await otpLoginUsecase.exec(OtpLoginRequest(phone: phone));
-    if (otpLoginResponse.success) {
+    final ok = await runVoidUseCase(
+      locator<OtpLoginUsecase>(),
+      OtpLoginRequest(phone: phone),
+    );
+    if (ok) {
       listenForCode();
     }
   }
@@ -297,13 +254,29 @@ class LoginController extends BaseController {
   }
 
   Future<void> confirmOtpLogin(String phone, String code) async {
-    final confirmOtpLoginUsecase = locator<ConfirmOtpLoginUsecase>();
-    final confirmOtpLoginResponse = await confirmOtpLoginUsecase.exec(ConfirmOtpLoginRequest(phone: phone, code: code));
-    if (confirmOtpLoginResponse.success) {
-      loginWithResponse(confirmOtpLoginResponse.loginData!,null);
-    } else {
-      FailureBus.I.emit(FailureNotice(failure: ServerFailure(confirmOtpLoginResponse.message)));
-      ref.read(loginErrorMessageProvider.notifier).state = confirmOtpLoginResponse.message;
+    try {
+      final loginData = await runUseCase(
+        locator<ConfirmOtpLoginUsecase>(),
+        ConfirmOtpLoginRequest(phone: phone, code: code),
+      );
+      loginWithResponse(loginData, null);
+    } on Failure catch (f) {
+      ref.read(loginErrorMessageProvider.notifier).state = f.message;
     }
+  }
+
+  Future<void> setInitialHeaders() async {
+    final AppInfoData infoData = await AppDeviceNetworkInfo.getAppInfo();
+    Bootstrap? bootstrap;
+    final sp = await sharedPreferencesAsync;
+    String? bootstrapJson = sp.getString('Bootstrap');
+    if (bootstrapJson != null) {
+      bootstrap = Bootstrap.fromJson(jsonDecode(bootstrapJson));
+    }
+    final apiService = locator<ApiService>();
+    apiService.addHeader({
+      'X-Bootstrap-Version': bootstrap?.appConfig.bootstrapVersion,
+      'X-App-Version': infoData.versionKey,
+    });
   }
 }

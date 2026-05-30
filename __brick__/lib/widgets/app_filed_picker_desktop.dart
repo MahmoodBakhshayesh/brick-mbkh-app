@@ -1,7 +1,8 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'app_text_field.dart';
 
 class AppFieldPickerDesktop<T> extends ConsumerStatefulWidget {
   // Mapping / data
@@ -267,7 +268,7 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: _closeOverlay,
-                child: Container(color: Colors.black.withOpacity(0.12)),
+                child: Container(color: Colors.black.withValues(alpha: 0.12)),
               ),
             ),
             // anchored menu below the value box
@@ -360,7 +361,7 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
     onKeyEvent: (_, e) => _handleKeys(e),
     child: Container(
       height: widget.height,
-      color: widget.headerBgColor ?? Theme.of(context).colorScheme.surfaceVariant,
+      color: widget.headerBgColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
       child: TextField(
         key: _searchFieldKey,
         focusNode: _searchFocus,
@@ -388,25 +389,6 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
           border: const OutlineInputBorder(),
         ),
       ),
-    ),
-  );
-
-  // (kept for compatibility; not used in menu anymore)
-  Widget _buildSuggestionStrip() => Container(
-    width: double.infinity,
-    color: (widget.headerBgColor ?? Theme.of(context).colorScheme.surface).withOpacity(0.7),
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-    child: Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: widget.suggestion
-          .map(
-            (sug) => ActionChip(
-              label: Text(_itemToText(sug), overflow: TextOverflow.ellipsis),
-              onPressed: () => _selectValue(sug),
-            ),
-          )
-          .toList(),
     ),
   );
 
@@ -443,14 +425,13 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
         itemBuilder: (context, idx) {
           // 1) Optional "None" row
           if (hasNullRow && idx == 0) {
-            final selected = _value.value == null;
             final hover = _highlight == 0;
             return InkWell(
               onTap: () => _selectValue(null),
               child: Container(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                color: hover ? Theme.of(context).colorScheme.primary.withOpacity(0.08) : null,
+                color: hover ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08) : null,
                 child: const Text('— None —'),
               ),
             );
@@ -469,9 +450,9 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
           Color? rowColor;
           if (inSuggestions) {
             final base = widget.suggestionColor ?? Theme.of(context).colorScheme.primary;
-            rowColor = customColor ?? base.withOpacity(hover ? 0.20 : 0.10);
+            rowColor = customColor ?? base.withValues(alpha: hover ? 0.20 : 0.10);
           } else {
-            rowColor = customColor ?? (hover ? Theme.of(context).colorScheme.primary.withOpacity(0.08) : null);
+            rowColor = customColor ?? (hover ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08) : null);
           }
 
           return InkWell(
@@ -504,7 +485,7 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
     if (query.isEmpty) {
       _filtered = List<T>.from(widget.items);
     } else {
-      final filter = (String qq, T item) => _itemToSearchText(item).toLowerCase().contains(qq);
+      bool filter(String qq, T item) => _itemToSearchText(item).toLowerCase().contains(qq);
       _filtered = widget.items.where((e) => filter(query, e)).toList();
     }
 
@@ -660,14 +641,15 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
     final valMsg = widget.validator?.call(displayText) ?? '';
 
 
-    // bool validationMode = ref.watch(globalFormValidationMode) && widget.required && displayText.isEmpty;
-    bool validationMode = false;
+    final validationMode =
+        ref.watch(globalFormValidationMode) && widget.required && displayText.isEmpty;
 
-    BoxBorder? boxBorder = validationMode ? BoxBorder.all(color: Colors.red) : BoxBorder.all(color: Colors.transparent);
+    final BoxBorder boxBorder =
+        validationMode ? BoxBorder.all(color: Colors.red) : BoxBorder.all(color: Colors.transparent);
 
     final Color vColor = widget.validationColor ?? Colors.red;
 
-    final InputBorder? border = widget.validationMode && valMsg.isNotEmpty
+    final InputBorder border = widget.validationMode && valMsg.isNotEmpty
         ? OutlineInputBorder(
             borderSide: BorderSide(color: vColor),
             borderRadius: widget.radius ?? BorderRadius.circular(8),
@@ -809,7 +791,7 @@ class _MyFieldPickerStateDesktop<T> extends ConsumerState<AppFieldPickerDesktop<
             alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: vColor),
-              color: vColor.withOpacity(0.06),
+              color: vColor.withValues(alpha: 0.06),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(

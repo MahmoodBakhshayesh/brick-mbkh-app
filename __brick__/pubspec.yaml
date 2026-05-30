@@ -31,7 +31,6 @@ dependencies:
   auto_size_text: ^3.0.0
   toastification: ^3.0.3
   logger: ^2.6.2
-  pretty_dio_logger: ^1.4.0
   app_device_net_info: ^0.0.6
   sembast: ^3.8.6
   sembast_web: ^2.4.4+1
@@ -75,10 +74,12 @@ dependencies:
   slide_countdown: ^2.0.2
   stop_watch_timer: ^3.2.2
   riverpod_sqflite: ^0.4.2
-  unified_fields: 0.2.5
+  unified_fields: ^0.2.5
 
-
-
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
 
 flutter:
   generate: true

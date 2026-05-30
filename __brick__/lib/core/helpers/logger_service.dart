@@ -17,7 +17,20 @@ class LoggerService {
 
   void w(Object message) => _logger.w(message);
 
-  void e(Object message, [Object? error, StackTrace? stackTrace]) => _logger.e(message, error: error, stackTrace: stackTrace);
+  void e(Object message, [Object? error, StackTrace? stackTrace]) {
+    // Log message only by default so decode errors don't repeat raw FormatException text.
+    if (error == null && stackTrace == null) {
+      _logger.e(message);
+      return;
+    }
+    _logger.e(message, error: error, stackTrace: stackTrace);
+    final trace = stackTrace ?? (error is Error ? error.stackTrace : null);
+    if (trace != null) {
+      debugPrint('══╡ $message ╞══');
+      debugPrint(trace.toString());
+      debugPrintStack(stackTrace: trace, label: message.toString());
+    }
+  }
 }
 
 mixin LoggerServiceHelperMixin {
