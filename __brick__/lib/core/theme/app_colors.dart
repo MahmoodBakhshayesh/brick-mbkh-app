@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const primaryColor = Color.fromRGBO(50, 118, 177, 1);
+  /// Brand primary — set at generation via Mason `primary_color` (hex without #).
+  static const primaryColor = Color(0xFF{{primary_color}});
+
+  /// Action buttons / CTAs — same as [primaryColor].
+  static const actions = primaryColor;
   static const secondaryColor = Color(0xFFF2C94C);
   static const scaffoldBackgroundColor = Color(0xFFF5F7FA);
   static const cardColor = Colors.white;
@@ -20,7 +24,6 @@ class AppColors {
   static const appBarBackground = Color(0xFF6094E7);
   static const foregroundColor = Color(0xFF5A6F8A);
   static const flightWidgetBackgroundColor = Color(0xFFFFFCFC);
-  static const actions= Color(0xffFF3B7C);
   static const darkSlateBlue = Color(0xff133159);
   static const slateBlue = Color(0xff5f7b98);
   static const scaffoldBg = Color(0xfff2f3f6);

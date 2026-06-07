@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../l10n/app_localizations.dart';
+import '../helpers/failure_localizer.dart';
 import '../helpers/system_info.dart';
+import '../interfaces/base_result.dart';
 
 extension BuldContextMore on BuildContext {
   double get width => MediaQuery.widthOf(this);
@@ -9,6 +11,8 @@ extension BuldContextMore on BuildContext {
   double get height => MediaQuery.heightOf(this);
 
   AppLocalizations get localizations => AppLocalizations.of(this)!;
+
+  String localizeFailure(Failure failure) => FailureLocalizer.localize(localizations, failure);
 
   ThemeData get theme => Theme.of(this);
 

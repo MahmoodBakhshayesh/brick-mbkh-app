@@ -62,15 +62,17 @@ import 'app_localizations_fa.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
-  static AppLocalizations? of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('fa')
+    Locale('fa'),
   ];
 
   /// No description provided for @login.
@@ -230,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @submit.
   ///
   /// In en, this message translates to:
-  /// **'submit'**
+  /// **'Submit'**
   String get submit;
 
   /// No description provided for @logout.
@@ -257,24 +260,6 @@ abstract class AppLocalizations {
   /// **'Search'**
   String get search;
 
-  /// No description provided for @coffees.
-  ///
-  /// In en, this message translates to:
-  /// **'Coffees'**
-  String get coffees;
-
-  /// No description provided for @procedures.
-  ///
-  /// In en, this message translates to:
-  /// **'Procedures'**
-  String get procedures;
-
-  /// No description provided for @recipes.
-  ///
-  /// In en, this message translates to:
-  /// **'Recipes'**
-  String get recipes;
-
   /// No description provided for @tokenExpired.
   ///
   /// In en, this message translates to:
@@ -287,11 +272,11 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
-  /// No description provided for @welcomeToBrewLab.
+  /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to BrewLab'**
-  String get welcomeToBrewLab;
+  /// **'Welcome'**
+  String get welcomeTitle;
 
   /// No description provided for @plzInsertPhoneNumber.
   ///
@@ -401,23 +386,17 @@ abstract class AppLocalizations {
   /// **'Please enter your password to login'**
   String get enterPasswordToEnter;
 
+  /// No description provided for @enterUsernameAndPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your username and password to sign in'**
+  String get enterUsernameAndPassword;
+
   /// No description provided for @loginOrSignup.
   ///
   /// In en, this message translates to:
   /// **'Login or SignUp'**
   String get loginOrSignup;
-
-  /// No description provided for @brewMethods.
-  ///
-  /// In en, this message translates to:
-  /// **'Brew Methods'**
-  String get brewMethods;
-
-  /// No description provided for @brewMethodSteps.
-  ///
-  /// In en, this message translates to:
-  /// **'Brew Method Steps'**
-  String get brewMethodSteps;
 
   /// No description provided for @otpLogin.
   ///
@@ -425,284 +404,63 @@ abstract class AppLocalizations {
   /// **'Login with OTP'**
   String get otpLogin;
 
-  /// No description provided for @roasters.
+  /// No description provided for @email.
   ///
   /// In en, this message translates to:
-  /// **'Roasters'**
-  String get roasters;
+  /// **'Email'**
+  String get email;
 
-  /// No description provided for @addRoaster.
+  /// No description provided for @delete.
   ///
   /// In en, this message translates to:
-  /// **'Add Roaster'**
-  String get addRoaster;
+  /// **'Delete'**
+  String get delete;
 
-  /// No description provided for @addCoffee.
+  /// No description provided for @retry.
   ///
   /// In en, this message translates to:
-  /// **'Add Coffee'**
-  String get addCoffee;
+  /// **'Retry'**
+  String get retry;
 
-  /// No description provided for @webUrl.
+  /// No description provided for @errorTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add Coffee'**
-  String get webUrl;
+  /// **'Error'**
+  String get errorTitle;
 
-  /// No description provided for @instaUrl.
+  /// No description provided for @emptyResponse.
   ///
   /// In en, this message translates to:
-  /// **'Add Coffee'**
-  String get instaUrl;
+  /// **'Empty response from server'**
+  String get emptyResponse;
 
-  /// No description provided for @description.
+  /// No description provided for @requestFailed.
   ///
   /// In en, this message translates to:
-  /// **'Add Coffee'**
-  String get description;
+  /// **'Request failed'**
+  String get requestFailed;
 
-  /// No description provided for @roaster.
+  /// No description provided for @deleteFailed.
   ///
   /// In en, this message translates to:
-  /// **'Roaster'**
-  String get roaster;
+  /// **'Delete failed'**
+  String get deleteFailed;
 
-  /// No description provided for @country.
+  /// No description provided for @networkError.
   ///
   /// In en, this message translates to:
-  /// **'Country'**
-  String get country;
+  /// **'Network error'**
+  String get networkError;
 
-  /// No description provided for @region.
+  /// No description provided for @unknownError.
   ///
   /// In en, this message translates to:
-  /// **'Region'**
-  String get region;
-
-  /// No description provided for @farm.
-  ///
-  /// In en, this message translates to:
-  /// **'Farm'**
-  String get farm;
-
-  /// No description provided for @variety.
-  ///
-  /// In en, this message translates to:
-  /// **'Variety'**
-  String get variety;
-
-  /// No description provided for @processMethod.
-  ///
-  /// In en, this message translates to:
-  /// **'Process Method'**
-  String get processMethod;
-
-  /// No description provided for @roastLevel.
-  ///
-  /// In en, this message translates to:
-  /// **'Roast Level'**
-  String get roastLevel;
-
-  /// No description provided for @roastDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Roast Date'**
-  String get roastDate;
-
-  /// No description provided for @harvestDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Harvest Date'**
-  String get harvestDate;
-
-  /// No description provided for @altitudeMin.
-  ///
-  /// In en, this message translates to:
-  /// **'Altitude Min'**
-  String get altitudeMin;
-
-  /// No description provided for @altitudeMax.
-  ///
-  /// In en, this message translates to:
-  /// **'Altitude Max'**
-  String get altitudeMax;
-
-  /// No description provided for @lot.
-  ///
-  /// In en, this message translates to:
-  /// **'Lot'**
-  String get lot;
-
-  /// No description provided for @productUrl.
-  ///
-  /// In en, this message translates to:
-  /// **'Product Url'**
-  String get productUrl;
-
-  /// No description provided for @packageSize.
-  ///
-  /// In en, this message translates to:
-  /// **'Package Size'**
-  String get packageSize;
-
-  /// No description provided for @price.
-  ///
-  /// In en, this message translates to:
-  /// **'Price'**
-  String get price;
-
-  /// No description provided for @cuppingScore.
-  ///
-  /// In en, this message translates to:
-  /// **'Cupping Score'**
-  String get cuppingScore;
-
-  /// No description provided for @flavorAttributes.
-  ///
-  /// In en, this message translates to:
-  /// **'Flavor Attributes'**
-  String get flavorAttributes;
-
-  /// No description provided for @customFlavorNotes.
-  ///
-  /// In en, this message translates to:
-  /// **'Custom Flavor Notes'**
-  String get customFlavorNotes;
-
-  /// No description provided for @recommendedBrewMethods.
-  ///
-  /// In en, this message translates to:
-  /// **'Recommended Brew Methods'**
-  String get recommendedBrewMethods;
-
-  /// No description provided for @isBlend.
-  ///
-  /// In en, this message translates to:
-  /// **'Is Blend'**
-  String get isBlend;
-
-  /// No description provided for @blendItems.
-  ///
-  /// In en, this message translates to:
-  /// **'Blend Items'**
-  String get blendItems;
-
-  /// No description provided for @isPublic.
-  ///
-  /// In en, this message translates to:
-  /// **'Is Public'**
-  String get isPublic;
-
-  /// No description provided for @percent.
-  ///
-  /// In en, this message translates to:
-  /// **'Percent'**
-  String get percent;
-
-  /// No description provided for @insertYourProfession.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Your Profession'**
-  String get insertYourProfession;
-
-  /// No description provided for @bio.
-  ///
-  /// In en, this message translates to:
-  /// **'Bio'**
-  String get bio;
-
-  /// No description provided for @profession.
-  ///
-  /// In en, this message translates to:
-  /// **'Profession'**
-  String get profession;
-
-  /// No description provided for @rate.
-  ///
-  /// In en, this message translates to:
-  /// **'Rate'**
-  String get rate;
-
-  /// No description provided for @createRecipe.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Recipe'**
-  String get createRecipe;
-
-  /// No description provided for @coffeeAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Coffee Amount'**
-  String get coffeeAmount;
-
-  /// No description provided for @waterAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Water Amount'**
-  String get waterAmount;
-
-  /// No description provided for @temperature.
-  ///
-  /// In en, this message translates to:
-  /// **'Temperature'**
-  String get temperature;
-
-  /// No description provided for @grindSize.
-  ///
-  /// In en, this message translates to:
-  /// **'Grind Size'**
-  String get grindSize;
-
-  /// No description provided for @coffee.
-  ///
-  /// In en, this message translates to:
-  /// **'Coffee'**
-  String get coffee;
-
-  /// No description provided for @addStep.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Step'**
-  String get addStep;
-
-  /// No description provided for @selectStep.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Step'**
-  String get selectStep;
-
-  /// No description provided for @create.
-  ///
-  /// In en, this message translates to:
-  /// **'Create'**
-  String get create;
-
-  /// No description provided for @recipeDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Recipe Details'**
-  String get recipeDetails;
-
-  /// No description provided for @duration.
-  ///
-  /// In en, this message translates to:
-  /// **'Duration'**
-  String get duration;
-
-  /// No description provided for @myRecipes.
-  ///
-  /// In en, this message translates to:
-  /// **'My Recipe'**
-  String get myRecipes;
-
-  /// No description provided for @publicRecipes.
-  ///
-  /// In en, this message translates to:
-  /// **'Public Recipe'**
-  String get publicRecipes;
+  /// **'Unknown error'**
+  String get unknownError;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -711,25 +469,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'fa'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'fa'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'fa': return AppLocalizationsFa();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'fa':
+      return AppLocalizationsFa();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

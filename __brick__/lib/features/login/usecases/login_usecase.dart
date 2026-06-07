@@ -13,10 +13,10 @@ class LoginRequest extends Request {
   Failure? validate() => null;
   
   @override
-  Map<String, dynamic> toJson() => Request.apiEnvelope({
-    'PhoneNumber': phone,
-    'Password': password,
-  });
+  Map<String, dynamic> toJson() => Request.plainJson({
+        'username': phone,
+        'password': password,
+      });
 }
 
 class LoginResponse extends UseCaseResponse {

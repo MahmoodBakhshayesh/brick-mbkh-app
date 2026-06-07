@@ -15,9 +15,9 @@ typedef UseCaseResponseFactory<R extends UseCaseResponse> = R Function({
 ///
 /// ```dart
 /// return mapUseCaseResponse(
-///   () => remote.getCoffees(request),
-///   onSuccess: (data) => GetCoffeesResponse(coffeesData: data),
-///   create: GetCoffeesResponse.new,
+///   () => remote.login(request),
+///   onSuccess: (data) => LoginResponse(loginData: data),
+///   create: LoginResponse.new,
 /// );
 /// ```
 Future<R> mapUseCaseResponse<T extends Object, R extends UseCaseResponse>(

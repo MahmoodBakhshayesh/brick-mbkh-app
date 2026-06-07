@@ -97,10 +97,8 @@ class ApiService {
   factory ApiService.appDefault({
     NetworkHook? onTokenExpire,
     AppInfoData? appInfoData,
-    int? bootStrapVersion,
     NetworkLogLevel logLevel = NetworkLogLevel.none,
   }) {
-    dev.log('check ApiService$bootStrapVersion');
     dev.log('check ApiService${appInfoData?.versionKey}');
     return ApiService(
       logLevel: logLevel,
@@ -114,8 +112,7 @@ class ApiService {
         return httpOk && (m.isEmpty || businessOk);
       },
       additionalHeaders: {
-        'X-App-Version':'',
-         'X-Bootstrap-Version':''
+        'X-App-Version': '',
       },
       failedCheck: (req, res) {
         final httpOk = (res.statusCode != null && res.statusCode! >= 200 && res.statusCode! < 300);
@@ -183,6 +180,36 @@ class ApiService {
     onReceiveProgress: onReceiveProgress,
     cancelToken: cancelToken,
   );
+
+  /// POST with `multipart/form-data` (fields and/or files via [FormData.fromMap]).
+  ///
+  /// Prefer this over [upload] / [uploadFormData] when the API expects a normal POST.
+  /// JSON `content-type` is stripped automatically so Dio can set the multipart boundary.
+  Future<NetworkResponse> postFormData(
+      String pathOrUrl, {
+        required Map<String, dynamic> formData,
+        Map<String, dynamic>? query,
+        Map<String, dynamic>? headers,
+        Duration? timeout,
+        bool? enableLogs,
+        bool? throwOnFailure,
+        ProgressCallback? onSendProgress,
+        ProgressCallback? onReceiveProgress,
+        CancelToken? cancelToken,
+      }) =>
+      _request(
+        HttpMethod.post,
+        pathOrUrl,
+        body: FormData.fromMap(formData),
+        query: query,
+        headers: headers,
+        timeout: timeout,
+        enableLogs: enableLogs,
+        throwOnFailure: throwOnFailure,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+        cancelToken: cancelToken,
+      );
 
   Future<NetworkResponse> put(
     String pathOrUrl, {

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import '/core/extensions/context_extension.dart';
 import '/core/theme/app_colors.dart';
-import '/widgets/inputs/app_text_form_field.dart';
+import 'package:{{project_name}}/widgets/inputs/{{project_name}}_field_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -114,7 +114,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                             context.localizations.welcomeToBrewLab ,
+                             context.localizations.welcomeTitle ,
                               style: AppStyles.pageHeader,
                             ),
                             Text(
@@ -135,7 +135,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                             const SizedBox(height: 12),
                             Directionality(
                               textDirection: TextDirection.ltr,
-                              child: AppTextFormField(
+                              child: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                                 placeholder: context.localizations.phoneEg,
                                 controller: phoneC,
                                 keyboardType: TextInputType.phone,
@@ -186,7 +186,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              context.localizations.welcomeToBrewLab,
+                              context.localizations.welcomeTitle,
                               style: AppStyles.pageHeader,
                             ),
                             Text(
@@ -207,7 +207,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                             const SizedBox(height: 12),
                             Directionality(
                               textDirection: TextDirection.ltr,
-                              child: AppTextFormField(
+                              child: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                                 controller: phoneC,
                                 locked: true,
                               ),
@@ -383,7 +383,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                               style: AppStyles.cardHeader,
                             ),
                             const SizedBox(height: 12),
-                            AppTextFormField(
+                            {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                               placeholder: context.localizations.name,
                               controller: nameC,
                             )
@@ -426,7 +426,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              context.localizations.welcomeToBrewLab,
+                              context.localizations.welcomeTitle,
                               style: AppStyles.pageHeader,
                             ),
                             Text(
@@ -447,7 +447,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                             const SizedBox(height: 12),
                             Directionality(
                               textDirection: TextDirection.ltr,
-                              child: AppTextFormField(
+                              child: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                                 placeholder: context.localizations.phoneEg,
                                 controller: phoneC,
                                 keyboardType: TextInputType.phone,
@@ -468,7 +468,7 @@ class _SignupViewPhoneState extends ConsumerState<SignupViewPhone> {
                             const SizedBox(height: 12),
                             Directionality(
                               textDirection: TextDirection.ltr,
-                              child: AppTextFormField(
+                              child: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                                 isPassword: true,
                                 controller: passwordC,
                                 keyboardType: TextInputType.visiblePassword,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import '../../di.dart';
+import '../extensions/context_extension.dart';
+import '../helpers/failure_localizer.dart';
 import '../helpers/logger_service.dart';
 import '../interfaces/base_failure.dart';
 import '../interfaces/base_overlays_helper.dart';
@@ -98,6 +100,8 @@ abstract class FailurePresenter {
       appLog.e('No context found for snackbar');
       return;
     }
+    final l10n = context.localizations;
+    final text = FailureLocalizer.localize(l10n, n.failure);
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -106,11 +110,11 @@ abstract class FailurePresenter {
           behavior: SnackBarBehavior.floating,
           backgroundColor: bg,
           duration: const Duration(seconds: 6),
-          content: Text(n.failure.message),
+          content: Text(text),
           action: n.retry == null
               ? null
               : SnackBarAction(
-                  label: 'Retry',
+                  label: l10n.retry,
                   textColor: Colors.white,
                   onPressed: n.retry!,
                 ),
@@ -119,6 +123,10 @@ abstract class FailurePresenter {
   }
 
   static void _showToast(FailureNotice n) {
+    final context = _rootContext;
+    final text = context == null || !context.mounted
+        ? n.failure.message
+        : FailureLocalizer.localize(context.localizations, n.failure);
     toastification.dismissAll();
     toastification.show(
       autoCloseDuration: const Duration(seconds: 6),
@@ -127,7 +135,7 @@ abstract class FailurePresenter {
       type: ToastificationType.error,
       style: ToastificationStyle.minimal,
       showProgressBar: true,
-      title: Text(n.failure.message),
+      title: Text(text),
     );
   }
 
@@ -137,13 +145,15 @@ abstract class FailurePresenter {
       appLog.e('No context found for dialog');
       return;
     }
+    final l10n = context.localizations;
+    final text = FailureLocalizer.localize(l10n, n.failure);
 
     showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (_) => AlertDialog(
-        title: const Text('Error'),
-        content: Text('${n.failure}'),
+        title: Text(l10n.errorTitle),
+        content: Text(text),
         actions: [
           if (n.retry != null)
             TextButton(
@@ -151,11 +161,11 @@ abstract class FailurePresenter {
                 Navigator.of(context).maybePop();
                 n.retry?.call();
               },
-              child: const Text('Retry'),
+              child: Text(l10n.retry),
             ),
           TextButton(
             onPressed: () => Navigator.of(context).maybePop(),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),

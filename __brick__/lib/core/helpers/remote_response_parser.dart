@@ -1,4 +1,5 @@
 import '../interfaces/base_result.dart';
+import '../interfaces/failure_code.dart';
 import '../models/networking/network_response.dart';
 
 /// Parses the standard `{ "Body": { "Response": ... } }` API envelope.
@@ -45,7 +46,14 @@ mixin RemoteResponseParser {
   ) {
     final value = parseBodyObjectOrNull(nr, fromJson);
     if (value == null) {
-      throw ServerFailure(nr.message ?? 'Empty response');
+      final message = nr.message?.trim();
+      if (message != null && message.isNotEmpty) {
+        throw ServerFailure(message);
+      }
+      throw ServerFailure(
+        FailureMessages.emptyResponse,
+        failureCode: FailureCode.emptyResponse,
+      );
     }
     return value;
   }
@@ -56,7 +64,14 @@ mixin RemoteResponseParser {
   ) {
     final value = parseBodyListOrNull(nr, fromJson);
     if (value == null) {
-      throw ServerFailure(nr.message ?? 'Empty response');
+      final message = nr.message?.trim();
+      if (message != null && message.isNotEmpty) {
+        throw ServerFailure(message);
+      }
+      throw ServerFailure(
+        FailureMessages.emptyResponse,
+        failureCode: FailureCode.emptyResponse,
+      );
     }
     return value;
   }

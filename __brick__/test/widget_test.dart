@@ -1,3 +1,3 @@
-// Placeholder — add widget tests when features are stable.
+// Placeholder ï¿½ add widget tests when features are stable.
 
 void main() {}

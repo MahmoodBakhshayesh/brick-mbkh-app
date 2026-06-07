@@ -1,11 +1,35 @@
 name: mbkh_app
 repository: https://github.com/MahmoodBakhshayesh/brick-mbkh-app
-description: Create a full MBKH Flutter starter project structure with rules and seeded feature.
-version: 0.2.2+1
+description: Create a full MBKH Flutter starter project structure with rules and seeded features (login, home, profile).
+version: 0.3.3+1
 vars:
   project_name:
     type: string
     description: Project name (snake_case)
     default: mbkh_app
     prompt: What is the project name?
-
+  use_phone_shell:
+    type: boolean
+    description: Wrap the app in a centered phone-width shell on wide screens
+    default: true
+    prompt: Use phone-width shell layout?
+  base_url:
+    type: string
+    description: Site origin for API and assets (no trailing slash; /api/ is appended for REST)
+    default: https://example.com
+    prompt: What is your API site origin? (e.g. https://myapp.com)
+  primary_color:
+    type: string
+    description: Brand primary color as 6-digit hex (no #). Used for primaryColor and actions.
+    default: 27756a
+    prompt: What is the primary brand color? (hex without #, e.g. 27756a)
+  use_phone_login_flow:
+    type: boolean
+    description: Use multi-step phone/OTP login instead of username+password screen
+    default: false
+    prompt: Use phone/OTP login flow? (No = username + password login page)
+  enable_offline_test_login:
+    type: boolean
+    description: Allow test/test login offline without calling the API
+    default: true
+    prompt: Enable offline test login (test/test)?

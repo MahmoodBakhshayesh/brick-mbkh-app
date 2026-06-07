@@ -29,6 +29,7 @@ class AsyncProviderWidget<T> extends ConsumerWidget {
       case AsyncLoading():
         return SpinKitCircle(size: 40, color: context.mainColor);
       case AsyncError():
+        final l10n = context.localizations;
         return Center(
           child: Column(
             spacing: 12,
@@ -50,7 +51,7 @@ class AsyncProviderWidget<T> extends ConsumerWidget {
                   AppButton(
                     height: 30,
                     color: Colors.orange,
-                    label: 'Retry',
+                    label: l10n.retry,
                     onPressed: () {
                       ref.invalidate(provider as ProviderOrFamily);
                     },

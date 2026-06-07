@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../../core/extensions/time_of_day_extension.dart';
-import '../../core/helpers/time_picker_utils.dart';
-import 'app_text_form_field.dart';
+import 'package:unified_fields/unified_fields.dart';
 
-class AppTimeOfDayInputField extends StatefulWidget {
+import '{{project_name}}_field_decoration.dart';
+
+class AppTimeOfDayInputField extends StatelessWidget {
   const AppTimeOfDayInputField({
     super.key,
     required this.onChanged,
@@ -21,60 +20,26 @@ class AppTimeOfDayInputField extends StatefulWidget {
   final bool locked;
 
   @override
-  State<AppTimeOfDayInputField> createState() => _AppTimeOfDayInputFieldState();
-}
-
-class _AppTimeOfDayInputFieldState extends State<AppTimeOfDayInputField> {
-  late final txtController = TextEditingController(text: widget.initialValue?.toJson);
-
-  @override
-  void didUpdateWidget(covariant AppTimeOfDayInputField oldWidget) {
-    if (oldWidget.initialValue != widget.initialValue) {
-      setState(() {
-        txtController.text = widget.initialValue?.toJson ?? '';
-      });
-    }
-    super.didUpdateWidget(oldWidget);
-  }
-
-  Future<void> onTimePickerPressed(BuildContext context) async {
-    final pickedTime = await TimePickerUtils.show(
-      context,
-      title: widget.label,
-      initialTime: widget.initialValue,
-      timePickerEntryMode: TimePickerEntryMode.input,
-    );
-    if (pickedTime == null) return;
-
-    txtController.text = pickedTime.toJson!;
-    widget.onChanged?.call(pickedTime);
-  }
-
-  @override
-  void dispose() {
-    txtController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.locked ? null : () => onTimePickerPressed(context),
-      child: AbsorbPointer(
-        absorbing: true,
-        child: AppTextFormField(
-          controller: txtController,
-          locked: widget.locked,
-          readOnly: true,
-          isRequired: widget.isRequired,
-          label: widget.label,
-          labelStyle: const TextStyle(fontSize: 11, color: Color(0xff111111), fontWeight: FontWeight.w600),
-          labelInRow: false,
-          borderSide: const BorderSide(color: Color(0xff919191)),
-          initialValue: widget.initialValue?.toJson,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          style: const TextStyle(color: Color(0xff40649E), fontWeight: FontWeight.w600),
-          textAlign: .center,
+    return UnifiedTimeOfDayField(
+      label: label,
+      value: initialValue,
+      locked: locked,
+      isRequired: isRequired,
+      timePickerEntryMode: TimePickerEntryMode.input,
+      onChanged: onChanged == null ? null : (value) => onChanged!(value!),
+      decorationSet: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.decorationSet,
+      decoration: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.base(
+        label: label,
+        labelStyle: const TextStyle(
+          fontSize: 11,
+          color: Color(0xff111111),
+          fontWeight: FontWeight.w600,
+        ),
+        borderSide: const BorderSide(color: Color(0xff919191)),
+        fieldStyle: const TextStyle(
+          color: Color(0xff40649E),
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

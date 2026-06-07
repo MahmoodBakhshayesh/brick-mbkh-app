@@ -1,4 +1,3 @@
-import 'package:{{project_name}}/features/login/domain/entities/bootstrap_class.dart';
 import 'package:{{project_name}}/features/login/domain/entities/login_response.dart';
 
 import '../../../core/interfaces/base_usecase.dart';
@@ -7,10 +6,14 @@ import '../domain/repositories/profile_repository.dart';
 
 class UpdateProfileRequest extends Request {
   final String fullName;
-  final String bio;
-  final Profession profession;
+  final String? username;
+  final String? email;
 
-  UpdateProfileRequest({required this.fullName, required this.bio,required this.profession});
+  UpdateProfileRequest({
+    required this.fullName,
+    this.username,
+    this.email,
+  });
 
   @override
   Failure? validate() => null;
@@ -18,9 +21,8 @@ class UpdateProfileRequest extends Request {
   @override
   Map<String, dynamic> toJson() => Request.apiEnvelope({
     'FullName': fullName,
-    'Bio': bio,
-    'ProfessionTypeId': profession.id,
-    'ProfessionTitle': profession.displayName,
+    if (username != null && username!.isNotEmpty) 'Username': username,
+    if (email != null && email!.isNotEmpty) 'Email': email,
   });
 }
 

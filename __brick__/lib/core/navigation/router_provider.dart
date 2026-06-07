@@ -9,7 +9,6 @@ import '../data/app_data.dart';
 import 'app_middlewares.dart';
 import 'app_route_names.dart';
 
-
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     debugLogDiagnostics: true,
@@ -27,31 +26,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/home',
         name: AppRouteNames.home,
         builder: (context, state) => const HomeView(),
-        routes: [
-          ShellRoute(
-            builder: (context, state, child) {
-              final recipeId = state.pathParameters['id'];
-              if (recipeId == null) {
-                return child;
-              }
-              return ProviderScope(
-                overrides: [
-                  // selectedIdProvider.overrideWithValue(recipeId),
-                ],
-                child: child,
-              );
-            },
-            routes: [
-              // GoRoute(
-              //   path: ':id/details',
-              //   name: AppRouteNames.details,
-              //   builder: (context, state) => const DetailsView(),
-              //   routes: [
-              //   ],
-              // ),
-            ],
-          ),
-        ],
       ),
       GoRoute(
         path: '/profile',

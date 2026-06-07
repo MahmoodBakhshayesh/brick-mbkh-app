@@ -79,8 +79,6 @@ class DefaultConfigLoader extends ConfigLoader {
     return AppConfig(
       flavor: AppData.defaultFlavor,
       baseUrl: Apis.baseUrl,
-      // baseUrl: 'https://erfanrez.ir/api/',
-      airlineLogoUrl: 'https://imagedcs.fdcs.ir/api/airlineimage/',
       hasServerSelect: true,
     );
   }

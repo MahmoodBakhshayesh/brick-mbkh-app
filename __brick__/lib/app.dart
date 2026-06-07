@@ -33,6 +33,7 @@ class App extends ConsumerWidget {
                 supportedLocales: AppLocalizations.supportedLocales,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 locale: ref.watch(localizationProvider),
+                {{#use_phone_shell}}
                 builder: (context, child) {
                   return Container(
                     color: const Color(0xffC7DCFF),
@@ -45,6 +46,7 @@ class App extends ConsumerWidget {
                     ),
                   );
                 },
+                {{/use_phone_shell}}
               ),
             ),
           ),

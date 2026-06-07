@@ -1,4 +1,5 @@
 import 'package:{{project_name}}/core/theme/app_colors.dart';
+import 'package:{{project_name}}/widgets/inputs/{{project_name}}_field_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:unified_fields/unified_fields.dart';
 
@@ -12,42 +13,62 @@ class UnifiedInputThemeShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return UnifiedInputThemeScope(
       data: _themeData,
-      brightnessOverride: UnifiedInputBrightness.dark,
+      brightnessOverride: UnifiedInputBrightness.light,
       paletteOverride: _palette,
       child: child,
     );
   }
 
   static final UnifiedInputThemeData _themeData = UnifiedInputThemeData(
-    disabledFieldBackgroundOpacity: 0.4,
+    disabledFieldBackgroundOpacity: 0.5,
     fieldDefaults: UnifiedInputFieldDefaults(
       labelMode: UnifiedFieldLabelMode.labelInColumn,
-      textStyle: const TextStyle(fontFamily: 'Yekan', color: AppColors.textColorDark),
-      textStylePersian: const TextStyle(fontFamily: 'Yekan', color: AppColors.textColorDark),
-      placeholderStyle: const TextStyle(fontFamily: 'Yekan'),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+      height: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.singleLineHeight,
+      borderSide: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.defaultBorder,
+      borderRadius: BorderRadius.circular(6),
+      textStyle: const TextStyle(
+        fontFamily: 'Kookfa',
+        fontSize: 14,
+        color: AppColors.textColor,
+      ),
+      textStylePersian: const TextStyle(
+        fontFamily: 'Kookfa',
+        fontSize: 14,
+        color: AppColors.textColor,
+      ),
+      placeholderStyle: const TextStyle(
+        fontFamily: 'Kookfa',
+        color: Color(0xffC4C4C4),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     ),
+    fieldDecorationSet: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.decorationSet,
     multiPickerCheckboxStyle: const UnifiedInputMultiPickerCheckboxStyle(
-      borderColor: Colors.black54,
+      borderColor: AppColors.borderColor2,
     ),
     pickerHeaderStyle: const UnifiedInputPickerHeaderStyle(
-      titleStyle: TextStyle(color: AppColors.textColorDark, fontSize: 16),
+      titleStyle: TextStyle(
+        color: AppColors.textColor,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        fontFamily: 'Kookfa',
+      ),
       padding: EdgeInsets.only(left: 12, right: 16, top: 12, bottom: 8),
     ),
-    pickerSheetBackgroundColor: AppColors.scaffoldBackgroundColorDark,
+    pickerSheetBackgroundColor: AppColors.cardColor,
   );
 
   static final UnifiedInputPalette _palette = UnifiedInputPalette(
-    bodyBackground: AppColors.black24,
-    headerBackground: AppColors.black24,
-    labelColor: AppColors.textColorDark,
-    hintColor: AppColors.hintColor,
-    fieldTextColor: AppColors.textColorDark,
+    bodyBackground: AppColors.cardColor,
+    headerBackground: AppColors.scaffoldHeader,
+    labelColor: AppColors.textColor,
+    hintColor: AppColors.subheadColor,
+    fieldTextColor: AppColors.textColor,
     borderColor: AppColors.borderColor,
-    defaultBorderSide: const BorderSide(color: AppColors.borderColor2, width: 0.5),
-    borderRadius: BorderRadius.circular(16),
-    validationColor: Colors.red,
-    sheetBackground: AppColors.scaffoldBackgroundColorDark,
-    sheetHeaderBackground: AppColors.scaffoldBackgroundColorDark,
+    defaultBorderSide: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.defaultBorder,
+    borderRadius: BorderRadius.circular(8),
+    validationColor: AppColors.errorColor,
+    sheetBackground: AppColors.cardColor,
+    sheetHeaderBackground: AppColors.scaffoldHeader,
   );
 }

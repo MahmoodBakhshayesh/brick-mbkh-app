@@ -6,7 +6,6 @@ class AppRouteNames {
   AppRouteNames._(); // Private constructor to prevent instantiation.
 
   static const String login = 'login';
-  static const String flights = 'flights';
   static const String home = 'home';
   static const String profile = 'profile';
   static const String details = 'details';

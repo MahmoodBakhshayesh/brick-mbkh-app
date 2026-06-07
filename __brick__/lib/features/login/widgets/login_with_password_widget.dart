@@ -10,7 +10,7 @@ import '../../../core/helpers/input_formatters.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_styles.dart';
 import '../../../widgets/buttons/app_new_button.dart';
-import '../../../widgets/inputs/app_text_form_field.dart';
+import 'package:{{project_name}}/widgets/inputs/{{project_name}}_field_decoration.dart';
 import '../../../widgets/main_card.dart';
 
 class LoginWithPasswordWidget extends HookConsumerWidget {
@@ -31,7 +31,7 @@ class LoginWithPasswordWidget extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                context.localizations.welcomeToBrewLab,
+                context.localizations.welcomeTitle,
                 style: AppStyles.pageHeader,
               ),
               Text(
@@ -52,7 +52,7 @@ class LoginWithPasswordWidget extends HookConsumerWidget {
               const SizedBox(height: 8),
               Directionality(
                 textDirection: TextDirection.ltr,
-                child: AppTextFormField(
+                child: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                   placeholder: context.localizations.phoneEg,
                   controller: phoneC,
                   keyboardType: TextInputType.phone,
@@ -71,7 +71,7 @@ class LoginWithPasswordWidget extends HookConsumerWidget {
                 style: AppStyles.cardHeader,
               ),
               const SizedBox(height: 8),
-              AppTextFormField(
+              {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                 isPassword: true,
                 controller: passC,
                 keyboardType: TextInputType.visiblePassword,

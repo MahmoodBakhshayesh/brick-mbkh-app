@@ -3,7 +3,6 @@ import 'package:app_device_net_info/app_device_net_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/models/base/flavor_config.dart';
-import '../../features/login/domain/entities/bootstrap_class.dart';
 
 class AppData extends ChangeNotifier {
   AppData._();
@@ -16,57 +15,38 @@ class AppData extends ChangeNotifier {
   String? get token => _token;
 
   String? _userId;
-  Bootstrap? _bootstrap;
-  Bootstrap? get bootstrap => _bootstrap;
-  BootstrapData? get bootstrapData => _bootstrap?.data;
-
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     _token = _prefs.getString(_kTokenKey);
     log('setting token $_token');
-    // Don't notify here because it's startup
   }
 
   Future<AppInfoData> get getAppInfo => AppDeviceNetworkInfo.getAppInfo();
 
   static Flavor get defaultFlavor => Flavor.dev;
 
-  void  setToken(String? value) {
+  void setToken(String? value) {
     if (_token != value) {
       _token = value;
       if (value != null) {
         _prefs.setString(_kTokenKey, value);
         log('saving token $value');
-      } else {
-        // _prefs.remove(_kTokenKey);
       }
       notifyListeners();
     }
   }
 
   void setUserId(String? value) {
-    if(value == null){
+    if (value == null) {
       log('logging out');
     }
     if (_userId != value) {
       _userId = value;
-      // if (value != null) {
-      //   _prefs.setString(_kTokenKey, value);
-      //   log("saving token ${value}");
-      // } else {
-      //   // _prefs.remove(_kTokenKey);
-      // }
-      notifyListeners();
-    }
-  }
-  void setBootstrap(Bootstrap? value) {
-    if (_bootstrap != value) {
-      _bootstrap = value;
       notifyListeners();
     }
   }
 
   bool get hasToken => _token != null && _token!.isNotEmpty;
-  bool get hasUserId => _userId !=null;
+  bool get hasUserId => _userId != null;
 }

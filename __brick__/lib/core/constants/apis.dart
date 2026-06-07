@@ -1,4 +1,9 @@
 class Apis {
-  static const baseUrl = 'https://brewlab.ir/api/';
-  static const photoBaseUr = 'https://brewlab.ir';
+  Apis._();
+
+  /// Configured at project generation via Mason `base_url`.
+  static const String _origin = '{{base_url}}';
+
+  static const String baseUrl = '$_origin/api/';
+  static const String photoBaseUr = _origin;
 }

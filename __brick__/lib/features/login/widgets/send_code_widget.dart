@@ -8,7 +8,7 @@ import '../../../core/extensions/string_extension.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_styles.dart';
 import '../../../widgets/buttons/app_new_button.dart';
-import '../../../widgets/inputs/app_text_form_field.dart';
+import 'package:{{project_name}}/widgets/inputs/{{project_name}}_field_decoration.dart';
 import '../../../widgets/main_card.dart';
 import '../login_controller.dart';
 
@@ -36,7 +36,7 @@ class SendCodeWidget extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                context.localizations.welcomeToBrewLab,
+                context.localizations.welcomeTitle,
                 style: AppStyles.pageHeader,
               ),
               Text(
@@ -57,7 +57,7 @@ class SendCodeWidget extends HookConsumerWidget {
               const SizedBox(height: 12),
               Directionality(
                 textDirection: TextDirection.ltr,
-                child: AppTextFormField(
+                child: {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                   controller: phoneC,
                   locked: true,
                 ),

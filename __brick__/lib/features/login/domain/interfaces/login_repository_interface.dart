@@ -1,7 +1,6 @@
 import '/features/login/usecases/check_phone_usecase.dart';
 import '/features/login/usecases/complete_profile_usecase.dart';
 import '/features/login/usecases/confirm_otp_login_usecase.dart';
-import '/features/login/usecases/get_bootstrap_usecase.dart';
 import '/features/login/usecases/otp_login_usecase.dart';
 import '/features/login/usecases/register_usecase.dart';
 
@@ -15,7 +14,6 @@ abstract class LoginRepositoryInterface {
   Future<OtpLoginResponse> otpLogin(OtpLoginRequest request);
   Future<RegisterResponse> register(RegisterRequest request);
   Future<UserEntity?> getUserByUsername(String username);
-  Future<GetBootstrapResponse> getBootstrap(GetBootstrapRequest version);
   Future<CheckPhoneResponse> checkPhone(CheckPhoneRequest phone);
   Future<ConfirmRegisterResponse> confirmRegister(ConfirmRegisterRequest request);
   Future<CompleteProfileResponse> completeProfile(CompleteProfileRequest request);

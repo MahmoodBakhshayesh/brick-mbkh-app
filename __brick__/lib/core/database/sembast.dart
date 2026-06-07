@@ -33,15 +33,7 @@ class SemBastDB {
     return instance;
   }
 
-  static StoreRef<String, Map<String, Object?>> get flightTable => stringMapStoreFactory.store('flights');
-
   static StoreRef<String, Map<String, Object?>> get usersTable => stringMapStoreFactory.store('users');
-
-  static StoreRef<String, Map<String, Object?>> get flightDetailsTable => stringMapStoreFactory.store('flightDetails');
-
-  static StoreRef<String, Map<String, Object?>> get roasteriesTable => stringMapStoreFactory.store('roasteries');
-
-  // static StoreRef<String, DateTime> get roasteriesTable => stringMapStoreFactory.store();
 
   static Future<void> setValue(String key, dynamic value) async {
     _store.record('key').put(_db, value);
@@ -54,13 +46,7 @@ class SemBastDB {
 
   static Future<void> seedDatabase() async {
     if ((await usersTable.count(_db)) < 2) {
-      // await usersTable.addAll(_db, [
-      //   UserEntity(...).toJson(),
-      // ]);
+      // Seed local users here when needed.
     }
-    // if ((await flightTable.count(_db)) == 0) {
-    //   final flightSeeds = [Flight(id: "01", origin: "sem", destination: "bast", departureTime: DateTime.now()), Flight(id: "02", origin: "bast", destination: "sem", departureTime: DateTime.now())];
-    //   await flightTable.addAll(_db, flightSeeds.map((a) => a.toJson()).toList());
-    // }
   }
 }

@@ -4,7 +4,6 @@ import 'package:{{project_name}}/features/login/usecases/check_phone_usecase.dar
 import 'package:{{project_name}}/features/login/usecases/complete_profile_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/confirm_otp_login_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/confirm_register_usecase.dart';
-import 'package:{{project_name}}/features/login/usecases/get_bootstrap_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/otp_login_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/register_usecase.dart';
 import 'package:get_it/get_it.dart';
@@ -13,6 +12,8 @@ import '../../usecases/login_usecase.dart';
 import '../data_sources/login_data_source_local.dart';
 import '../data_sources/login_data_source_remote.dart';
 import '../entities/login_response.dart';
+import '../entities/offline_test_login.dart';
+import '../interfaces/login_data_source_interface.dart';
 import '../interfaces/login_repository_interface.dart';
 
 class LoginRepository extends BaseRepository implements LoginRepositoryInterface {
@@ -33,8 +34,12 @@ class LoginRepository extends BaseRepository implements LoginRepositoryInterface
 
   @override
   Future<LoginResponse> login(LoginRequest request) {
+    final LoginDataSourceInterface dataSource =
+        OfflineTestLogin.matches(request.phone, request.password)
+            ? localDataSource
+            : remoteDataSource;
     return mapUseCaseResponse(
-      () => remoteDataSource.login(request),
+      () => dataSource.login(request),
       onSuccess: (loginData) => LoginResponse(loginData: loginData),
       create: LoginResponse.new,
     );
@@ -101,15 +106,6 @@ class LoginRepository extends BaseRepository implements LoginRepositoryInterface
       () => remoteDataSource.confirmOtpLogin(request),
       onSuccess: (loginData) => ConfirmOtpLoginResponse(loginData: loginData),
       create: ConfirmOtpLoginResponse.new,
-    );
-  }
-
-  @override
-  Future<GetBootstrapResponse> getBootstrap(GetBootstrapRequest request) {
-    return mapUseCaseResponse(
-      () => remoteDataSource.getBootstrap(request),
-      onSuccess: (bootstrap) => GetBootstrapResponse(bootstrap: bootstrap),
-      create: GetBootstrapResponse.new,
     );
   }
 }

@@ -1,4 +1,4 @@
 class Const {
   // static const String serverSelectUrl = 'https://ghcn-api.fdcs.ir';
-  static const String appName = 'BrewLab';
+  static const String appName = '{{project_name}}';
 }

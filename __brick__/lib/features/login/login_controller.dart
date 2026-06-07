@@ -9,7 +9,6 @@ import 'package:{{project_name}}/di.dart';
 import 'package:{{project_name}}/features/login/usecases/check_phone_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/complete_profile_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/confirm_register_usecase.dart';
-import 'package:{{project_name}}/features/login/usecases/get_bootstrap_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/otp_login_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/register_usecase.dart';
 import 'package:get_it/get_it.dart';
@@ -18,7 +17,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:readsms/readsms.dart';
 import '../../core/controllers/base_controller.dart';
 import '../../core/data/app_data.dart';
-import 'domain/entities/bootstrap_class.dart';
 import 'domain/entities/login_response.dart';
 import 'login_view_state.dart';
 import 'usecases/confirm_otp_login_usecase.dart';
@@ -40,7 +38,6 @@ class LoginController extends BaseController {
   @override
   void init() {
     setInitialHeaders();
-    loadBootstrap(null);
     super.init();
   }
 
@@ -54,7 +51,7 @@ class LoginController extends BaseController {
         _loginUsecase,
         LoginRequest(phone: username, password: password),
       );
-      loginWithResponse(loginData, null);
+      loginWithResponse(loginData);
     } on Failure catch (f) {
       logger.w("Login failed for user: '$username'. Reason: ${f.message}");
       ref.read(loginErrorMessageProvider.notifier).state = f.message;
@@ -103,7 +100,7 @@ class LoginController extends BaseController {
     }
 
     LoginResponseData loginData = LoginResponseData.fromJson(jsonDecode(userJson));
-    loginWithResponse(loginData, null);
+    loginWithResponse(loginData);
   }
 
   Future<void> confirmRegister(String phone, String code) async {
@@ -153,9 +150,6 @@ class LoginController extends BaseController {
   }
 
   String? extractCodeFromMessage(String message) {
-    if (!message.toLowerCase().contains('blucher.coffee'.toLowerCase())) {
-      return null;
-    }
     final RegExp codeRegExp = RegExp(r'\b\d{6}\b');
     final match = codeRegExp.firstMatch(message);
     if (match != null) {
@@ -176,7 +170,7 @@ class LoginController extends BaseController {
     }
   }
 
-  Future<void> loginWithResponse(LoginResponseData loginData, Bootstrap? bs) async {
+  Future<void> loginWithResponse(LoginResponseData loginData) async {
     ref.read(authenticatedUserProvider.notifier).state = loginData.user;
 
     AppData.instance.setUserId(loginData.user.id);
@@ -186,47 +180,12 @@ class LoginController extends BaseController {
     ref.read(signupStepProvider.notifier).update((s) => 0);
   }
 
-  Future<Bootstrap?> loadBootstrap(int? version) async {
-    logger.w('loadBootstrap');
-
-    final sp = await sharedPreferencesAsync;
-    String? bootstrapJson = sp.getString('Bootstrap');
-    if (bootstrapJson != null) {
-      final apiService = locator<ApiService>();
-      Bootstrap bootstrap = Bootstrap.fromJson(jsonDecode(bootstrapJson));
-      apiService.addHeader({'X-Bootstrap-Version': bootstrap.appConfig.bootstrapVersion});
-      if (version == null || bootstrap.appConfig.bootstrapVersion == version) {
-        AppData.instance.setBootstrap(bootstrap);
-        await sp.setString('Bootstrap', jsonEncode(bootstrap.toJson()));
-        getBootstrap(bootstrap.appConfig.bootstrapVersion, bootstrap);
-        return bootstrap;
-      }
-    }
-    final newBT = await getBootstrap(version, null);
-    return newBT;
-  }
-
-  Future<Bootstrap?> getBootstrap(int? version, Bootstrap? cached) async {
-    final sp = await sharedPreferencesAsync;
-    final bootstrap = await runUseCaseOrNull(
-      locator<GetBootstrapUsecase>(),
-      GetBootstrapRequest(version: version, cached: cached),
-    );
-    if (bootstrap != null) {
-      AppData.instance.setBootstrap(bootstrap);
-      await sp.setString('Bootstrap', jsonEncode(bootstrap.toJson()));
-      final apiService = locator<ApiService>();
-      apiService.addHeader({'X-Bootstrap-Version': bootstrap.appConfig.bootstrapVersion});
-    }
-    return bootstrap;
-  }
-
   Future<void> completeProfile({required String phone, required String password, required String name}) async {
     try {
       logger.e('completeProfile');
       final ok = await runVoidUseCase(
         locator<CompleteProfileUsecase>(),
-        CompleteProfileRequest(password: password, fullName: name, professionType: 100, professionTitle: 'Developer'),
+        CompleteProfileRequest(password: password, fullName: name),
       );
       if (ok) {
         await login(phone, password);
@@ -259,7 +218,7 @@ class LoginController extends BaseController {
         locator<ConfirmOtpLoginUsecase>(),
         ConfirmOtpLoginRequest(phone: phone, code: code),
       );
-      loginWithResponse(loginData, null);
+      loginWithResponse(loginData);
     } on Failure catch (f) {
       ref.read(loginErrorMessageProvider.notifier).state = f.message;
     }
@@ -267,15 +226,8 @@ class LoginController extends BaseController {
 
   Future<void> setInitialHeaders() async {
     final AppInfoData infoData = await AppDeviceNetworkInfo.getAppInfo();
-    Bootstrap? bootstrap;
-    final sp = await sharedPreferencesAsync;
-    String? bootstrapJson = sp.getString('Bootstrap');
-    if (bootstrapJson != null) {
-      bootstrap = Bootstrap.fromJson(jsonDecode(bootstrapJson));
-    }
     final apiService = locator<ApiService>();
     apiService.addHeader({
-      'X-Bootstrap-Version': bootstrap?.appConfig.bootstrapVersion,
       'X-App-Version': infoData.versionKey,
     });
   }

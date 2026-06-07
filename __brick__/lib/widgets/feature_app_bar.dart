@@ -1,3 +1,4 @@
+import 'package:{{project_name}}/core/theme/app_colors.dart';
 import 'package:{{project_name}}/widgets/buttons/app_back_button.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +12,12 @@ class FeatureAppBar extends StatelessWidget implements PreferredSizeWidget {
   const FeatureAppBar({
     super.key,
     required this.title,
-    this.showBackButton = false,
+    this.showBackButton = true,
     this.leading,
     this.actions,
   });
 
-  static const double barHeight = 108;
+  static const double barHeight = 78;
 
   @override
   Size get preferredSize => const Size.fromHeight(barHeight);
@@ -25,6 +26,7 @@ class FeatureAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       height: barHeight,
+      color: AppColors.primaryColor,
       alignment: Alignment.center,
       child: SafeArea(
         child: Row(

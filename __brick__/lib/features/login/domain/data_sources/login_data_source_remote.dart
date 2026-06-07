@@ -3,14 +3,12 @@ import 'package:{{project_name}}/features/login/domain/entities/check_phone_resp
 import 'package:{{project_name}}/features/login/usecases/complete_profile_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/confirm_otp_login_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/confirm_register_usecase.dart';
-import 'package:{{project_name}}/features/login/usecases/get_bootstrap_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/login_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/otp_login_usecase.dart';
 import 'package:{{project_name}}/features/login/usecases/register_usecase.dart';
 
 import '../../../../core/interfaces/base_data_source.dart';
 import '../../usecases/check_phone_usecase.dart';
-import '../entities/bootstrap_class.dart';
 import '../entities/login_response.dart';
 import '../interfaces/login_data_source_interface.dart';
 
@@ -85,20 +83,5 @@ class LoginDataSourceRemote extends RemoteDataSource implements LoginDataSourceI
       body: request.toJson(),
     );
     return parseBodyObjectOrNull(nr, LoginResponseData.fromJson);
-  }
-
-  @override
-  Future<Bootstrap?> getBootstrap(GetBootstrapRequest request) async {
-    final uri = Uri(
-      path: 'Bootstrap',
-      queryParameters: {'version': request.version?.toString()},
-    );
-    final nr = await apiService.get(uri.toString());
-    if (!nr.success) return null;
-    final response = bodyResponse(nr);
-    if (response is Map && response['Data'] == null && request.cached != null) {
-      return request.cached;
-    }
-    return parseBodyObjectOrNull(nr, Bootstrap.fromJson);
   }
 }

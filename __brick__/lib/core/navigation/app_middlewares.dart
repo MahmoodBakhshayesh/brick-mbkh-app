@@ -15,7 +15,7 @@ class AppMiddlewares {
       return '/login';
     }
 
-    // If logged in and on login page or root, redirect to passengers
+    // If logged in and on login page or root, redirect to home
     if (isLoggedIn && (isLoggingIn || state.uri.path == '/')) {
       return '/home';
     }

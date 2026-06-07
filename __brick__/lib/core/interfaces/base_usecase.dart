@@ -25,6 +25,9 @@ abstract class Request {
     };
   }
 
+  /// REST JSON body (no envelope).
+  static Map<String, dynamic> plainJson(Map<String, dynamic> fields) => fields;
+
   /// Legacy envelope when an [execution] name is required on the body.
   static Map<String, dynamic> createRequestJson({
     required String execution,

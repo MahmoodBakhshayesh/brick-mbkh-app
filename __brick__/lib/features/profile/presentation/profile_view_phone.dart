@@ -1,10 +1,8 @@
-import '/core/data/app_data.dart';
 import '/features/login/domain/entities/login_response.dart';
 import '/features/login/login_view_state.dart';
 import '/features/profile/widgets/user_avatar.dart';
-import '/widgets/app_field_picker.dart';
 import '/widgets/app_lang_widget.dart';
-import '/widgets/app_text_field.dart';
+import 'package:{{project_name}}/widgets/inputs/{{project_name}}_field_decoration.dart';
 import '/widgets/dot_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -26,70 +24,41 @@ class ProfileViewPhone extends HookConsumerWidget {
       return Scaffold();
     }
     final nameC = useTextEditingController.fromValue(TextEditingValue(text: user.fullName));
-    final bioC = useTextEditingController.fromValue(TextEditingValue(text: user.bio??''));
-    final profession = useState(AppData.instance.bootstrapData!.professions.firstWhere((a) => a.id == user.professionType));
+    final usernameC = useTextEditingController.fromValue(TextEditingValue(text: user.username ?? ''));
+    final emailC = useTextEditingController.fromValue(TextEditingValue(text: user.email ?? ''));
+
     return Scaffold(
       appBar: ProfileAppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: UserAvatar(
-                    url: user.profileImageUrl,
-                    size: context.width * 0.5,
-                    onChange: profileController.setAvatar,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.localizations.bio,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          user.bio??'',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            UserAvatar(
+              url: user.profileImageUrl,
+              size: context.width * 0.4,
+              onChange: profileController.setAvatar,
             ),
             ListTile(
               title: Text(user.phoneNumber),
-              leading: Icon(Icons.phone),
+              leading: const Icon(Icons.phone),
             ),
             editMode.value
                 ? Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          AppTextFieldNew(
+                          {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
                             label: context.localizations.name,
                             controller: nameC,
                           ),
-                          AppFieldPicker(
-                            label: context.localizations.profession,
-                            items: AppData.instance.bootstrapData!.professions,
-                            value: profession.value,
-                            onChange: (a) {
-                              profession.value = a!;
-                            },
+                          {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
+                            label: context.localizations.username,
+                            controller: usernameC,
                           ),
-                          AppTextFieldNew(
-                            height: 120,
-                            label: context.localizations.bio,
-                            minLines: 3,
-                            maxLines: 5,
-                            controller: bioC,
+                          {{#pascalCase}}{{project_name}}{{/pascalCase}}FieldDecoration.textField(
+                            label: context.localizations.email,
+                            controller: emailC,
+                            keyboardType: TextInputType.emailAddress,
                           ),
                         ],
                       ),
@@ -101,16 +70,21 @@ class ProfileViewPhone extends HookConsumerWidget {
                       children: [
                         ListTile(
                           title: Text(user.fullName),
-                          leading: Icon(Icons.person),
+                          leading: const Icon(Icons.person),
                         ),
-                        ListTile(
-                          title: Text(user.professionTitle),
-                          leading: Icon(Icons.star),
-                        ),
+                        if (user.username != null && user.username!.isNotEmpty)
+                          ListTile(
+                            title: Text(user.username!),
+                            leading: const Icon(Icons.account_circle),
+                          ),
+                        if (user.email != null && user.email!.isNotEmpty)
+                          ListTile(
+                            title: Text(user.email!),
+                            leading: const Icon(Icons.email),
+                          ),
                       ],
                     ),
                   ),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
               child: !editMode.value
@@ -124,17 +98,6 @@ class ProfileViewPhone extends HookConsumerWidget {
                             editMode.value = true;
                           },
                         ),
-                        // Expanded(
-                        //   child:  AppSliderButton(
-                        //     color: AppColors.ice,
-                        //     label: 'slider to exit',
-                        //     icon: Icons.exit_to_app,
-                        //     onPressed: () async {
-                        //       await Future.delayed(Duration(seconds: 1));
-                        //       // await profileController.logout(context);
-                        //     },
-                        //   ),
-                        // ),
                         Expanded(
                           child: AppButton(
                             label: context.localizations.logout,
@@ -146,22 +109,25 @@ class ProfileViewPhone extends HookConsumerWidget {
                         ),
                       ],
                     )
-                  :
-              Row(
-                children: [
-                  Expanded(
+                  : Row(
+                      children: [
+                        Expanded(
                           child: AppButton(
                             label: context.localizations.confirm,
                             onPressed: () async {
-                              final update = await profileController.updateProfile(fullName: nameC.text, bio: bioC.text, profession: profession.value);
+                              final update = await profileController.updateProfile(
+                                fullName: nameC.text,
+                                username: usernameC.text.trim().isEmpty ? null : usernameC.text.trim(),
+                                email: emailC.text.trim().isEmpty ? null : emailC.text.trim(),
+                              );
                               if (update) {
                                 editMode.value = false;
                               }
                             },
                           ),
                         ),
-                ],
-              ),
+                      ],
+                    ),
             ),
           ],
         ),
@@ -185,7 +151,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: SafeArea(
         child: Row(
           children: [
-            BackButton(
+            const BackButton(
               color: Colors.white,
             ),
             Expanded(
@@ -195,16 +161,15 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Text(
                           context.localizations.profile,
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
                         ),
                       ),
-
-                      AppLangWidget(),
-                      SizedBox(width: 8),
+                      const AppLangWidget(),
+                      const SizedBox(width: 8),
                     ],
                   ),
                 ],

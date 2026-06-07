@@ -16,3 +16,10 @@ alwaysApply: true
 
 - If a controller needs a new action (upload/delete/rate/etc.), create/use a dedicated use case.
 - Do not bypass use cases for "small" operations.
+- Use `runUseCase` / `runVoidUseCase` in controllers; surface errors via `FailureBus` or localized UI (`context.localizeFailure(failure)`).
+- Before `await`, capture notifiers you need after the async gap; do not use `ref` after dispose (see `profile_controller.dart` logout).
+
+# List screens
+
+- Prefer `AsyncProviderWidget` + pull-to-refresh + `FeatureAppBar`.
+- Delete actions: `showConfirmDeleteDialog` from `lib/widgets/dialogs/confirm_delete_dialog.dart`.

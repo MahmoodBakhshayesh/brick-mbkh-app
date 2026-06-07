@@ -7,14 +7,10 @@ import '../domain/repositories/login_repository.dart';
 class CompleteProfileRequest extends Request {
   final String password;
   final String fullName;
-  final int professionType;
-  final String professionTitle;
 
   CompleteProfileRequest({
     required this.password,
     required this.fullName,
-    required this.professionType,
-    required this.professionTitle,
   });
 
   @override
@@ -24,8 +20,6 @@ class CompleteProfileRequest extends Request {
   Map<String, dynamic> toJson() => Request.apiEnvelope({
     'Password': password,
     'FullName': fullName,
-    'ProfessionType': professionType,
-    'ProfessionTitle': professionTitle,
   });
 }
 

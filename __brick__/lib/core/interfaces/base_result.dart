@@ -1,3 +1,5 @@
+import 'failure_code.dart';
+
 sealed class Result<T> {
   const Result();
 
@@ -42,10 +44,11 @@ final class Err<T> extends Result<T> {
 
 abstract class Failure {
   final String message;
+  final FailureCode? failureCode;
   final Object? cause;
   final StackTrace? stackTrace;
 
-  const Failure(this.message, {this.cause, this.stackTrace});
+  const Failure(this.message, {this.failureCode, this.cause, this.stackTrace});
 
   @override
   // String toString() => '$runtimeType($message)';
@@ -53,14 +56,21 @@ abstract class Failure {
 }
 
 class ValidationFailure extends Failure {
-  const ValidationFailure(super.message);
+  ValidationFailure(FailureCode code) : super(code.name, failureCode: code);
 }
 
 class ServerFailure extends Failure {
   final int? statusCode;
   final dynamic body;
 
-  const ServerFailure(super.message, {this.statusCode, this.body, super.cause, super.stackTrace});
+  const ServerFailure(
+    super.message, {
+    super.failureCode,
+    this.statusCode,
+    this.body,
+    super.cause,
+    super.stackTrace,
+  });
 }
 
 class UnknownFailure extends Failure {

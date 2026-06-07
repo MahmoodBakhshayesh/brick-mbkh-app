@@ -9,14 +9,20 @@ The **`unified_fields`** package is maintained at:
 
 **`E:\Develop\FlutterProjects\unified_fields`**
 
-When editing that package, opening files, or wiring a **`path:`** dependency from Brewlab (or other apps), use this root—not paths under `StudioProjects` or other old locations.
+Brick dependency version: **`^1.0.0+1`**
 
-**`pubspec.yaml` example (Brewlab lives elsewhere):**
+When editing that package, opening files, or wiring a **`path:`** dependency from generated apps, use this root—not paths under `StudioProjects` or other old locations.
+
+**`pubspec.yaml` example:**
 
 ```yaml
 dependencies:
-  unified_fields:
-    path: E:/Develop/FlutterProjects/unified_fields
+  unified_fields: ^1.0.0+1
+  # or path dependency when developing the package locally:
+  # unified_fields:
+  #   path: E:/Develop/FlutterProjects/unified_fields
 ```
 
-Forward slashes in `path:` are fine on Windows. Prefer a **relative** `path:` when Brewlab is a sibling of `unified_fields` under the same parent folder.
+Forward slashes in `path:` are fine on Windows. Prefer a **relative** `path:` when the app is a sibling of `unified_fields` under the same parent folder.
+
+**Brick convention:** per-app field chrome lives in `lib/widgets/inputs/<project_name>_field_decoration.dart` (`*FieldDecoration.textField` / `.singlePicker`).
